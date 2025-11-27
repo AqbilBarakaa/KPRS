@@ -1,12 +1,21 @@
 <?php
+// config/database.php
 $host = "localhost";
+$db   = "kprs";
 $user = "root";
 $pass = "";
-$dbname = "kprs";
+$charset = "utf8mb4";
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
-    die("Database gagal konek: " . $e->getMessage());
+    // Jangan tampilkan detail di production
+    die("Koneksi database gagal: " . $e->getMessage());
 }
