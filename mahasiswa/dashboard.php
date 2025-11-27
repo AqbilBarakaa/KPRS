@@ -1,9 +1,16 @@
 <?php
-require_once '../config/auth.php';
+require_once "../config/database.php";
+require_once "../config/auth.php";
 
-$auth = new Auth();
-$auth->requireRole(['mahasiswa']);
+$auth = new Auth($pdo);
+
+// Proteksi: jika user bukan mahasiswa → tendang ke login
+if (!$auth->isLoggedIn() || $_SESSION['user']['role'] !== 'mahasiswa') {
+    header("Location: ../login.php");
+    exit;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
