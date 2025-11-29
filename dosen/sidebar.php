@@ -31,12 +31,28 @@ $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) 
 <div class="sidebar-box">
     <div class="sidebar-header">Menu Dosen</div>
     <ul class="menu-list">
-        <li><a href="dashboard.php" class="<?= $currentPage == 'dashboard.php' ? 'menu-active' : 'menu-default' ?>">Dashboard</a></li>
+        <li>
+            <a href="dashboard.php" class="<?= $currentPage == 'dashboard.php' ? 'menu-active' : 'menu-default' ?>">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="profil.php" class="<?= $currentPage == 'profil.php' ? 'menu-active' : 'menu-default' ?>">
+                Profil Saya
+            </a>
+        </li>
         
-        <li><a href="profil.php" class="<?= $currentPage == 'profil.php' ? 'menu-active' : 'menu-default' ?>">Profil</a></li>
+        <li>
+            <a href="perwalian.php" class="<?= $currentPage == 'perwalian.php' ? 'menu-active' : 'menu-default' ?>">
+                Mahasiswa Perwalian
+            </a>
+        </li>
         
-        <li><a href="#" class="menu-default">Mahasiswa Perwalian</a></li>
         <li><a href="#" class="menu-default">Jadwal Mengajar</a></li>
-        <li><a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">Ubah Password</a></li>
+        <li>
+            <a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">
+                Ubah Password
+            </a>
+        </li>
     </ul>
 </div>
