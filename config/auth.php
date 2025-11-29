@@ -8,8 +8,9 @@ class Auth {
     private $pdo;
 
     public function __construct() {
+        global $pdo; 
         require_once __DIR__ . "/database.php";
-        // $pdo di-define oleh database.php
+        
         if (!isset($pdo)) {
             throw new Exception("PDO tidak ditemukan. Periksa config/database.php");
         }
@@ -20,28 +21,19 @@ class Auth {
         return isset($_SESSION['user']);
     }
 
-    // fungsi bantu untuk cek password (mendukung hash atau plain)
     private function verifyPassword($plain, $stored) {
         if (empty($stored)) return false;
-
-        // Jika tampak hash yang dihasilkan password_hash
-        if (strpos($stored, '$2y$') === 0 || strpos($stored, '$2a$') === 0
-            || strpos($stored, '$argon2') === 0) {
+        if (strpos($stored, '$2y$') === 0 || strpos($stored, '$2a$') === 0 || strpos($stored, '$argon2') === 0) {
             return password_verify($plain, $stored);
         }
-
-        // Jika MD5 (contoh deteksi sederhana)
         if (preg_match('/^[a-f0-9]{32}$/i', $stored)) {
             return md5($plain) === $stored;
         }
-
-        // fallback: plain text compare (tidak aman — sebaiknya migrasi ke password_hash)
         return hash_equals($stored, $plain);
     }
 
-    // Login: terima username (nim / nidn / nip) dan password plain
     public function login($username, $password) {
-        // 1) Cek Mahasiswa (nim)
+        // 1) Cek Mahasiswa
         $stmt = $this->pdo->prepare("SELECT * FROM mahasiswa WHERE nim = :u LIMIT 1");
         $stmt->execute([':u' => $username]);
         $m = $stmt->fetch();
@@ -51,26 +43,32 @@ class Auth {
                     'id' => $m['id'],
                     'username' => $m['nim'],
                     'nama' => $m['nama'],
-                    'role' => 'mahasiswa'
+                    'role' => 'mahasiswa',
+                    'prodi' => $m['prodi']
                 ];
                 return true;
             }
             return false;
         }
 
-        // 2) Cek Dosen (nidn)
+        // 2) Cek Dosen
         $stmt = $this->pdo->prepare("SELECT * FROM dosen WHERE nidn = :u LIMIT 1");
         $stmt->execute([':u' => $username]);
         $d = $stmt->fetch();
         if ($d) {
             if ($this->verifyPassword($password, $d['password'])) {
                 $jab = strtolower(trim($d['jabatan'] ?? ''));
-                if ($jab === 'dpa') {
-                    $role = 'dosen_dpa';
-                } elseif ($jab === 'kaprodi' || $jab === 'kaprodi.') {
+                
+                if ($jab === 'kaprodi') {
                     $role = 'dosen_kaprodi';
                 } else {
-                    $role = 'dosen';
+                    $stmtDpa = $this->pdo->prepare("SELECT id FROM mahasiswa WHERE dpa_id = ? LIMIT 1");
+                    $stmtDpa->execute([$d['id']]);
+                    if ($stmtDpa->rowCount() > 0) {
+                        $role = 'dosen_dpa';
+                    } else {
+                        $role = 'dosen'; 
+                    }
                 }
 
                 $_SESSION['user'] = [
@@ -85,24 +83,24 @@ class Auth {
             return false;
         }
 
-        // 3) Cek Tata Usaha (nip)
+        // 3) Cek Tata Usaha
         $stmt = $this->pdo->prepare("SELECT * FROM tata_usaha WHERE nip = :u LIMIT 1");
         $stmt->execute([':u' => $username]);
         $tu = $stmt->fetch();
         if ($tu) {
             if ($this->verifyPassword($password, $tu['password'])) {
+                // PERUBAHAN: Hapus penyimpanan 'tu_role' karena sekarang hanya 1 role
                 $_SESSION['user'] = [
                     'id' => $tu['id'],
                     'username' => $tu['nip'],
                     'nama' => $tu['nama'],
-                    'role' => 'tu'
+                    'role' => 'tu' // Role tunggal untuk semua staff TU
                 ];
                 return true;
             }
             return false;
         }
 
-        // jika tidak ditemukan
         return false;
     }
 
@@ -115,29 +113,12 @@ class Auth {
         $role = $_SESSION['user']['role'] ?? '';
 
         switch ($role) {
-            case 'mahasiswa':
-                header("Location: mahasiswa/dashboard.php");
-                break;
-
-            case 'dosen_dpa':
-                header("Location: dosen/dpa/dashboard.php");
-                break;
-
-            case 'dosen_kaprodi':
-                header("Location: dosen/kaprodi/dashboard.php");
-                break;
-
-            case 'dosen':
-                header("Location: dosen/dashboard.php");
-                break;
-
-            case 'tu':
-                header("Location: tu/dashboard.php");
-                break;
-
-            default:
-                header("Location: login.php");
-                break;
+            case 'mahasiswa': header("Location: mahasiswa/dashboard.php"); break;
+            case 'dosen_dpa': header("Location: dosen/dashboard.php"); break;
+            case 'dosen_kaprodi': header("Location: dosen/kaprodi/dashboard.php"); break;
+            case 'dosen': header("Location: dosen/dashboard.php"); break;
+            case 'tu': header("Location: tu/dashboard.php"); break;
+            default: header("Location: login.php"); break;
         }
         exit;
     }
@@ -152,7 +133,8 @@ class Auth {
             );
         }
         session_destroy();
-        header("Location: login.php");
+        header("Location: /KPRS/login.php"); 
         exit;
     }
 }
+?>

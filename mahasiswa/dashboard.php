@@ -1,43 +1,53 @@
 <?php
-// mahasiswa/dashboard.php
 require_once "../config/auth.php";
-$auth = new Auth();
+require_once "../config/database.php";
 
+$auth = new Auth();
 if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
     header("Location: ../login.php");
     exit;
 }
+
+$user = $_SESSION['user'];
+$nama = htmlspecialchars($user['nama']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Dashboard Mahasiswa</title>
+    <title>Dashboard | Portal Akademik</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">KPRS - Mahasiswa</a>
-    <div class="d-flex">
-      <span class="navbar-text me-3 text-white">
-        <?= htmlspecialchars($_SESSION['user']['nama']) ?> (<?= htmlspecialchars($_SESSION['user']['username']) ?>)
-      </span>
-      <a class="btn btn-outline-light" href="../logout.php">Logout</a>
-    </div>
-  </div>
-</nav>
+<body>
 
-<div class="container mt-4">
-    <h3>Dashboard Mahasiswa</h3>
-    <p>Selamat datang, <strong><?= htmlspecialchars($_SESSION['user']['nama']) ?></strong>.</p>
+<?php include 'header.php'; ?>
 
-    <div class="card">
-        <div class="card-body">
-            <p><strong>Role:</strong> Mahasiswa</p>
-            <p>Di sini kamu dapat mengajukan KPRS, melihat jadwal, dsb. (contoh halaman)</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="content-box">
+                <div class="welcome-title">Selamat Datang <?= strtoupper($nama) ?></div>
+                <div class="welcome-text">
+                    <p>Selamat Datang di Portal Akademik. Portal Akademik adalah sistem yang memungkinkan para civitas akademika Universitas Trunojoyo Madura untuk menerima informasi dengan lebih cepat melalui Internet.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <div class="msg-header"><i class="fas fa-envelope me-2"></i> Kotak Pesan</div>
+                <div class="alert alert-info"><i class="fas fa-info-circle"></i> Belum ada pesan baru.</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <?php include 'sidebar.php'; ?>
         </div>
     </div>
+    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,201 @@
+/* assets/css/style.css */
+
+/* --- GLOBAL BODY --- */
+body {
+    background-color: #f4f4f4;
+    font-family: sans-serif;
+    font-size: 0.9rem;
+}
+
+/* --- LOGIN PAGE STYLES --- */
+body.login-page {
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+.login-card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    background: white;
+}
+.login-header {
+    background: linear-gradient(to bottom, #444, #222);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+    border-bottom: 4px solid #666;
+}
+.login-logo {
+    width: 70px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.login-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.login-subtitle {
+    font-size: 0.85rem;
+    color: #ccc;
+    margin-top: 5px;
+}
+.btn-login {
+    background: linear-gradient(to bottom, #444, #222);
+    border: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+.btn-login:hover {
+    background: #333;
+    color: #fff;
+    transform: translateY(-1px);
+}
+.footer-text {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+/* --- HEADER PORTAL (DASHBOARD) --- */
+.header-portal {
+    background: linear-gradient(to bottom, #444, #222);
+    color: white;
+    padding: 15px;
+    border-bottom: 3px solid #666;
+    margin-bottom: 20px;
+}
+.header-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.header-logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* --- SIDEBAR & BOXES --- */
+.sidebar-box {
+    background: white;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+.sidebar-header {
+    background: linear-gradient(to bottom, #fdfbf0, #e8e5ce);
+    padding: 8px 10px;
+    font-weight: bold;
+    color: #6d4c41;
+    border-bottom: 1px solid #ddd;
+}
+.sidebar-content {
+    padding: 10px;
+}
+
+/* --- MENU NAVIGATION --- */
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.menu-list li {
+    border-bottom: 1px dotted #ccc;
+}
+.menu-list li a {
+    display: block;
+    padding: 6px 10px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.menu-list li a:hover {
+    background-color: #f9f9f9;
+    color: #b36b00;
+}
+.menu-active {
+    font-weight: bold;
+    color: #007bff !important;
+    background-color: #eee;
+}
+.menu-default {
+    color: #d98c00;
+}
+
+/* --- PROFILE PHOTO --- */
+.profile-img-box {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.profile-img {
+    width: 100px;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    padding: 2px;
+    background: white;
+}
+.profile-info {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #555;
+}
+.profile-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+/* --- MAIN CONTENT --- */
+.content-box {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.welcome-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+.welcome-text {
+    text-align: justify;
+    color: #555;
+    line-height: 1.6;
+}
+.msg-header {
+    font-weight: bold;
+    color: #d98c00;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* --- FORMS & TABLES --- */
+.form-header {
+    background-color: #f0f8ff;
+    color: #003366;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+.form-table th {
+    background-color: #f9f9f9;
+    width: 30%;
+    vertical-align: middle;
+    font-weight: normal;
+    color: #003366;
+}
+.form-table td {
+    vertical-align: middle;
+}
