@@ -46,7 +46,12 @@ $fotoProfil = (!empty($fotoDb) && file_exists("../../assets/img/uploads/$fotoDb"
             <a href="jadwal_mengajar.php" class="<?= basename($_SERVER['PHP_SELF']) == 'jadwal_mengajar.php' ? 'menu-active' : 'menu-default' ?>">
                 Jadwal Mengajar
             </a>
-        </li>        
+        </li>
+        <li>
+            <a href="pesan.php" class="<?= $currentPage == 'pesan.php' ? 'menu-active' : 'menu-default' ?>">
+                Pesan
+            </a>
+        </li>    
         <li><a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">Ubah Password</a></li>
     </ul>
 </div>

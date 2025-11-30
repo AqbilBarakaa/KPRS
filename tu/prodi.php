@@ -41,7 +41,7 @@ $dataProdi = $pdo->query($query)->fetchAll();
         <div class="col-md-9">
             <div class="content-box">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="msg-header mb-0"><i class="fas fa-university me-2"></i> Data Program Studi</div>
+                    <div class="msg-header mb-0">Data Program Studi</div>
                     <a href="prodi_form.php" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Tambah Prodi</a>
                 </div>
 

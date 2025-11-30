@@ -199,3 +199,102 @@ body.login-page {
 .form-table td {
     vertical-align: middle;
 }
+
+/* Foto di Tabel */
+.table-foto {
+    width: 40px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Judul Halaman Informasi & Detail */
+.info-title, .detail-title {
+    color: #003366;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.semester-title {
+    color: #003366;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Link Paket Semester */
+.paket-link {
+    display: block;
+    color: blue;
+    text-decoration: underline;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+.paket-link:hover {
+    color: darkblue;
+}
+
+/* Tabel Custom Blue Header */
+.table-header-blue {
+    background-color: #e6f2ff;
+    color: #003366;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.85rem;
+}
+.table-row-bordered td {
+    border: 1px solid #ccc;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+/* Accordion Custom Link Style */
+.accordion-button.custom-link {
+    background-color: transparent !important;
+    color: blue !important;
+    text-decoration: underline;
+    padding: 5px 0;
+    box-shadow: none !important;
+    font-size: 1rem;
+    justify-content: flex-start;
+    border: none;
+}
+.accordion-button.custom-link:not(.collapsed) {
+    color: darkblue !important;
+    font-weight: bold;
+}
+.accordion-button.custom-link::after {
+    display: none; 
+}
+
+/* Tabel Detail Kelas */
+.table-detail th {
+    background-color: #f8f9fa;
+    width: 25%;
+    color: #555;
+    vertical-align: top;
+}
+
+/* Tabel Prasyarat (Nested) */
+.table-prasyarat {
+    width: 100%;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+.table-prasyarat thead th {
+    background-color: #fff;
+    border-bottom: 2px solid #eee;
+    color: #003366;
+    font-weight: bold;
+    padding: 5px;
+}
+.table-prasyarat td {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}

@@ -37,7 +37,7 @@ $jadwal = $stmt->fetchAll();
     <div class="row">
         <div class="col-md-9">
             <div class="content-box">
-                <div class="msg-header"><i class="fas fa-calendar-alt me-2"></i> Jadwal Mengajar Saya</div>
+                <div class="msg-header">Jadwal Mengajar Saya</div>
                 
                 <?php if(empty($jadwal)): ?>
                     <div class="alert alert-info text-center">

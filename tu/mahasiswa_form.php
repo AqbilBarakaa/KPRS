@@ -112,15 +112,6 @@ $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoP
 </head>
 <body>
 <?php include "../header.php"; ?>
-<div class="header-portal">
-    <div class="container">
-        <div class="header-title">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Lambang_Universitas_Trunojoyo_Madura.png" alt="Logo" class="header-logo">
-            Portal Akademik | Kelompok 5
-        </div>
-    </div>
-</div>
-
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-10">

@@ -16,6 +16,13 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
-    // Jangan tampilkan detail di production
     die("Koneksi database gagal: " . $e->getMessage());
 }
+
+if (!function_exists('kirimNotifikasi')) {
+    function kirimNotifikasi($pdo, $user_id, $user_type, $judul, $pesan, $tipe = 'info', $link = '#', $sender_id = null, $sender_type = null) {
+        $stmt = $pdo->prepare("INSERT INTO notifikasi (user_id, user_type, judul, pesan, tipe, link, sender_id, sender_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$user_id, $user_type, $judul, $pesan, $tipe, $link, $sender_id, $sender_type]);
+    }
+}
+?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 05:29 PM
+-- Generation Time: Nov 30, 2025 at 04:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,7 +94,9 @@ INSERT INTO `kelas` (`id`, `mata_kuliah_id`, `kode_kelas`, `nama_kelas`, `ruanga
 (16, 63, 'A', 'IF 7A', 'F401', 4, 'Selasa', '09:30:00', '12:00:00', 30, 29, '2025-11-29 13:03:00'),
 (17, 63, 'B', 'IF 7B', 'F402', 4, 'Rabu', '12:30:00', '15:00:00', 30, 12, '2025-11-29 13:03:00'),
 (18, 65, 'A', 'IF 7A', 'F403', 5, 'Kamis', '12:30:00', '15:00:00', 30, 30, '2025-11-29 13:03:00'),
-(19, 47, NULL, 'IF 5A', 'F304', 1, 'Kamis', '07:00:00', '09:30:00', 40, 0, '2025-11-29 13:19:58');
+(19, 47, NULL, 'IF 5A', 'F304', 1, 'Kamis', '07:00:00', '09:30:00', 40, 0, '2025-11-29 13:19:58'),
+(20, 3, NULL, 'IF 1A', 'F205', 5, 'Senin', '07:00:00', '09:30:00', 40, 0, '2025-11-30 02:29:09'),
+(21, 3, NULL, 'IF 1A', 'F204', 4, 'Senin', '09:29:00', '09:29:00', 40, 0, '2025-11-30 02:29:35');
 
 -- --------------------------------------------------------
 
@@ -126,7 +128,7 @@ CREATE TABLE `krs_awal` (
   `id` int(11) NOT NULL,
   `mahasiswa_id` int(11) DEFAULT NULL,
   `kelas_id` int(11) DEFAULT NULL,
-  `status` enum('terdaftar','selesai','drop') DEFAULT 'terdaftar',
+  `status` enum('terdaftar','selesai','drop','disetujui') DEFAULT 'terdaftar',
   `tanggal_daftar` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -270,13 +272,29 @@ CREATE TABLE `notifikasi` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_type` enum('mahasiswa','dosen','tata_usaha') NOT NULL,
+  `sender_id` int(11) DEFAULT NULL,
+  `sender_type` enum('mahasiswa','dosen','tata_usaha') DEFAULT NULL,
   `judul` varchar(255) NOT NULL,
   `pesan` text NOT NULL,
   `tipe` enum('info','warning','success','error') DEFAULT 'info',
   `is_read` tinyint(1) DEFAULT 0,
+  `is_deleted` tinyint(1) DEFAULT 0,
   `link` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `notifikasi`
+--
+
+INSERT INTO `notifikasi` (`id`, `user_id`, `user_type`, `sender_id`, `sender_type`, `judul`, `pesan`, `tipe`, `is_read`, `is_deleted`, `link`, `created_at`) VALUES
+(1, 1, 'mahasiswa', NULL, NULL, 'Pengajuan Disetujui Kaprodi', 'Pengajuan tambah kelas Anda disetujui Kaprodi dan diteruskan ke TU.', 'success', 1, 0, '#', '2025-11-30 02:07:35'),
+(2, 1, 'tata_usaha', NULL, NULL, 'Pengajuan Kelas Baru', 'Ada pengajuan tambah kelas baru yang disetujui Kaprodi. Harap proses.', 'warning', 1, 0, 'pengajuan.php', '2025-11-30 02:07:35'),
+(3, 1, 'mahasiswa', NULL, NULL, 'Kelas Dibuka!', 'Bagian TU telah memproses pengajuan Anda. Silakan cek jadwal dan ambil KRS.', 'success', 1, 0, '#', '2025-11-30 02:08:08'),
+(4, 2, 'dosen', NULL, NULL, 'Pengajuan Tambah Kelas', 'Mahasiswa Asep Prayogi mengajukan tambah kelas Pancasila.', 'warning', 1, 0, 'validasi_tambah_kelas.php', '2025-11-30 02:46:47'),
+(5, 2, 'dosen', 1, 'mahasiswa', 'Pengajuan Tambah Kelas', 'Mahasiswa Asep Prayogi mengajukan tambah kelas Matematika Teknik.', 'warning', 1, 0, 'validasi_tambah_kelas.php', '2025-11-30 02:49:21'),
+(6, 2, 'dosen', 1, 'mahasiswa', 'Pengajuan Tambah Kelas', 'Mahasiswa Asep Prayogi mengajukan tambah kelas Bahasa Inggris.', 'warning', 1, 0, 'validasi_tambah_kelas.php', '2025-11-30 02:56:37'),
+(7, 2, 'dosen', 3, 'mahasiswa', 'Pengajuan Tambah Kelas', 'Mahasiswa Rypaldho Ridotua Hutagaol mengajukan tambah kelas Bahasa Inggris.', 'warning', 1, 0, 'validasi_tambah_kelas.php', '2025-11-30 02:57:01');
 
 -- --------------------------------------------------------
 
@@ -290,7 +308,7 @@ CREATE TABLE `pengajuan_tambah_kelas` (
   `mata_kuliah_id` int(11) DEFAULT NULL,
   `kelas_id` int(11) DEFAULT NULL,
   `alasan` text DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `status` enum('pending','approved','rejected','completed') DEFAULT 'pending',
   `tanggal_pengajuan` timestamp NULL DEFAULT current_timestamp(),
   `tanggal_validasi` timestamp NULL DEFAULT NULL,
   `validator_id` int(11) DEFAULT NULL,
@@ -303,7 +321,13 @@ CREATE TABLE `pengajuan_tambah_kelas` (
 --
 
 INSERT INTO `pengajuan_tambah_kelas` (`id`, `mahasiswa_id`, `mata_kuliah_id`, `kelas_id`, `alasan`, `status`, `tanggal_pengajuan`, `tanggal_validasi`, `validator_id`, `catatan_validasi`, `created_at`) VALUES
-(1, 1, 8, 2, 'Saya ingin mengambil Mata Kuliah ini tetapi sudah penuh', 'pending', '2025-11-29 13:13:22', NULL, NULL, NULL, '2025-11-29 13:13:22');
+(1, 1, 8, 2, 'Saya ingin mengambil Mata Kuliah ini tetapi sudah penuh', 'completed', '2025-11-29 13:13:22', '2025-11-30 02:07:35', 2, 'test', '2025-11-29 13:13:22'),
+(2, 1, 3, NULL, 'tes', 'approved', '2025-11-30 02:19:38', '2025-11-30 02:26:01', 2, 'mas', '2025-11-30 02:19:38'),
+(3, 1, 5, NULL, '123', 'rejected', '2025-11-30 02:24:14', '2025-11-30 02:26:19', 2, 'jangan', '2025-11-30 02:24:14'),
+(4, 1, 4, NULL, '335', 'pending', '2025-11-30 02:46:47', NULL, NULL, NULL, '2025-11-30 02:46:47'),
+(5, 1, 7, NULL, 'wdad', 'pending', '2025-11-30 02:49:21', NULL, NULL, NULL, '2025-11-30 02:49:21'),
+(6, 1, 5, NULL, '123', 'approved', '2025-11-30 02:56:37', '2025-11-30 03:28:53', 2, '', '2025-11-30 02:56:37'),
+(7, 3, 5, NULL, '123', 'pending', '2025-11-30 02:57:01', NULL, NULL, NULL, '2025-11-30 02:57:01');
 
 -- --------------------------------------------------------
 
@@ -489,7 +513,7 @@ ALTER TABLE `dosen`
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `kprs`
@@ -519,13 +543,13 @@ ALTER TABLE `mata_kuliah`
 -- AUTO_INCREMENT for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `pengajuan_tambah_kelas`
 --
 ALTER TABLE `pengajuan_tambah_kelas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `periode_akademik`

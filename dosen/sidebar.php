@@ -1,4 +1,5 @@
 <?php
+// dosen/sidebar.php
 $currentPage = basename($_SERVER['PHP_SELF']);
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
@@ -9,6 +10,9 @@ $stmtFoto = $pdo->prepare("SELECT foto FROM dosen WHERE id = ?");
 $stmtFoto->execute([$user['id']]);
 $fotoDb = $stmtFoto->fetchColumn();
 $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) ? "../assets/img/uploads/$fotoDb" : "https://via.placeholder.com/100x120.png?text=DOSEN";
+
+// Hitung pesan belum dibaca untuk Badge
+$cntUnread = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id={$user['id']} AND user_type='dosen' AND is_read=0")->fetchColumn();
 ?>
 <div class="sidebar-box">
     <div class="sidebar-header">Informasi Pengguna</div>
@@ -37,7 +41,7 @@ $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) 
         </li>
         <li>
             <a href="profil.php" class="<?= $currentPage == 'profil.php' ? 'menu-active' : 'menu-default' ?>">
-                Profil Saya
+                Profil
             </a>
         </li>
         <li>
@@ -49,7 +53,16 @@ $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) 
             <a href="jadwal_mengajar.php" class="<?= $currentPage == 'jadwal_mengajar.php' ? 'menu-active' : 'menu-default' ?>">
                 Jadwal Mengajar
             </a>
-        </li>        <li>
+        </li>
+        <li>
+            <a href="pesan.php" class="<?= $currentPage == 'pesan.php' ? 'menu-active' : 'menu-default' ?>">
+                Pesan
+                <?php if($cntUnread > 0): ?>
+                    <span class="badge bg-danger ms-1"><?= $cntUnread ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li>
             <a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">
                 Ubah Password
             </a>

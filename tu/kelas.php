@@ -61,7 +61,6 @@ $data = $pdo->query($query)->fetchAll();
         <div class="col-md-3">
             <?php include "sidebar.php"; ?>
         </div>
-
     </div>
 </div>
 <?php include "../footer.php"; ?>

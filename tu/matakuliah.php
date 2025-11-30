@@ -45,7 +45,7 @@ $mkPilihan = $pdo->query("SELECT mk.*, ps.nama_prodi
         <div class="col-md-9">
             <div class="content-box">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="msg-header mb-0"><i class="fas fa-book me-2"></i> Data Mata Kuliah</div>
+                    <div class="msg-header mb-0">Data Mata Kuliah</div>
                     <a href="matakuliah_form.php" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Tambah MK</a>
                 </div>
 

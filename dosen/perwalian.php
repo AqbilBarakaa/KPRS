@@ -1,16 +1,26 @@
 <?php
+// dosen/perwalian.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
+// Cek akses: Dosen Biasa/DPA/Kaprodi bisa masuk
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa', 'dosen_kaprodi'])) {
     header("Location: ../login.php"); exit;
 }
 
 $dosen_id = $_SESSION['user']['id'];
+
+// --- AMBIL DATA MAHASISWA BINAAN ---
+// Hitung juga berapa SKS yang statusnya masih 'terdaftar' (belum divalidasi/disetujui)
 $query = "
     SELECT m.*, ps.nama_prodi,
-           (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'terdaftar') as total_mk
+           (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'terdaftar') as belum_validasi,
+           (SELECT SUM(mk.sks) 
+            FROM krs_awal k 
+            JOIN kelas kl ON k.kelas_id = kl.id 
+            JOIN mata_kuliah mk ON kl.mata_kuliah_id = mk.id 
+            WHERE k.mahasiswa_id = m.id AND k.status IN ('terdaftar', 'disetujui')) as total_sks
     FROM mahasiswa m
     LEFT JOIN program_studi ps ON m.prodi = ps.nama_prodi 
     WHERE m.dpa_id = ?
@@ -41,7 +51,7 @@ $listMhs = $stmt->fetchAll();
         <div class="col-md-9">
             <div class="content-box">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="msg-header mb-0"><i class="fas fa-users me-2"></i> Mahasiswa Perwalian</div>
+                    <div class="msg-header mb-0">Mahasiswa Perwalian</div>
                     <span class="badge bg-primary"><?= count($listMhs) ?> Mahasiswa</span>
                 </div>
 
@@ -51,11 +61,11 @@ $listMhs = $stmt->fetchAll();
                             <tr class="text-center">
                                 <th>No</th>
                                 <th>Foto</th>
-                                <th>NIM</th>
-                                <th>Nama Mahasiswa</th>
+                                <th>Mahasiswa</th>
                                 <th>L/P</th>
-                                <th>Semester</th>
-                                <th>MK Diambil</th>
+                                <th>Sem</th>
+                                <th>Total SKS</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -73,19 +83,23 @@ $listMhs = $stmt->fetchAll();
                             <tr>
                                 <td class="text-center"><?= $no++ ?></td>
                                 <td class="text-center"><img src="<?= $fotoUrl ?>" class="table-foto"></td>
-                                <td class="text-center"><?= htmlspecialchars($row['nim']) ?></td>
-                                <td><?= htmlspecialchars($row['nama']) ?></td>
+                                <td>
+                                    <b><?= htmlspecialchars($row['nama']) ?></b><br>
+                                    <?= htmlspecialchars($row['nim']) ?>
+                                </td>
                                 <td class="text-center"><?= htmlspecialchars($row['jenis_kelamin'] ?? '-') ?></td>
                                 <td class="text-center"><?= htmlspecialchars($row['semester']) ?></td>
+                                <td class="text-center fw-bold"><?= $row['total_sks'] ?? 0 ?> SKS</td>
                                 <td class="text-center">
-                                    <span class="badge bg-info text-dark"><?= $row['total_mk'] ?> MK</span>
+                                    <?php if($row['belum_validasi'] > 0): ?>
+                                        <span class="badge bg-warning text-dark">Butuh Validasi</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-success">Sudah Valid</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-primary btn-sm" title="Lihat Detail">
-                                        <i class="fas fa-search"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-sm" title="Konsultasi">
-                                        <i class="fas fa-comments"></i>
+                                    <a href="validasi_krs.php?mhs_id=<?= $row['id'] ?>" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit me-1"></i> Validasi KRS
                                     </a>
                                 </td>
                             </tr>
@@ -97,7 +111,15 @@ $listMhs = $stmt->fetchAll();
         </div>
 
         <div class="col-md-3">
-            <?php include "sidebar.php"; ?>
+            <?php 
+            if($_SESSION['user']['role'] == 'dosen_kaprodi') {
+                // Jika Kaprodi, panggil sidebar khusus (perlu path yg benar jika beda folder)
+                // Karena kita di root dosen/, kita include sidebar.php lokal
+                include "sidebar.php"; 
+            } else {
+                include "sidebar.php";
+            }
+            ?>
         </div>
     </div>
 </div>

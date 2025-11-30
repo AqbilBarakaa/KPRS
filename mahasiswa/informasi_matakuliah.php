@@ -43,7 +43,6 @@ $dataPerSemester = [];
 for ($i = 1; $i <= 8; $i++) {
     $dataPerSemester[$i] = [];
 }
-
 foreach ($allData as $row) {
     $sem = $row['semester'];
     if ($sem >= 1 && $sem <= 8) {
@@ -59,44 +58,6 @@ foreach ($allData as $row) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .info-title {
-            color: #003366; font-weight: bold; font-size: 1.2rem;
-            margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;
-        }
-        .semester-title {
-            color: #003366; font-weight: bold; font-size: 1.1rem;
-            margin-top: 20px; margin-bottom: 10px;
-        }
-        
-        .accordion-button {
-            background-color: transparent !important;
-            color: blue !important;
-            text-decoration: underline;
-            padding: 5px 0;
-            box-shadow: none !important;
-            font-size: 1rem;
-            justify-content: flex-start;
-            border: none;
-        }
-        .accordion-button:not(.collapsed) {
-            color: darkblue !important;
-            font-weight: bold;
-        }
-        .accordion-button::after { display: none; }
-        .accordion-item { border: none; background: transparent; margin-bottom: 5px; }
-        .accordion-body { padding: 10px 0 20px 0; }
-
-        .table-header-blue {
-            background-color: #e6f2ff; color: #003366;
-            font-weight: bold; text-align: center; vertical-align: middle;
-            font-size: 0.85rem;
-        }
-        .table-row-bordered td {
-            border: 1px solid #ccc; vertical-align: middle;
-            font-size: 0.9rem;
-        }
-    </style>
 </head>
 <body>
 
@@ -132,15 +93,14 @@ foreach ($allData as $row) {
 
                 <div class="accordion" id="accordionMatkul">
                     <?php for($i=1; $i<=8; $i++): ?>
-                        <div class="accordion-item">
+                        <div class="accordion-item" style="border:none; background:transparent; margin-bottom:5px;">
                             <h2 class="accordion-header" id="heading<?= $i ?>">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $i ?>" aria-expanded="false" aria-controls="collapse<?= $i ?>">
+                                <button class="accordion-button custom-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $i ?>" aria-expanded="false" aria-controls="collapse<?= $i ?>">
                                     Paket Semester <?= $i ?>
                                 </button>
                             </h2>
                             <div id="collapse<?= $i ?>" class="accordion-collapse collapse" aria-labelledby="heading<?= $i ?>" data-bs-parent="#accordionMatkul">
-                                <div class="accordion-body">
-                                    
+                                <div class="accordion-body pt-0">
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-sm table-hover mb-0">
                                             <thead>
@@ -155,10 +115,8 @@ foreach ($allData as $row) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php 
-                                                $listMK = $dataPerSemester[$i];
-                                                if (empty($listMK)): 
-                                                ?>
+                                                <?php $listMK = $dataPerSemester[$i]; ?>
+                                                <?php if (empty($listMK)): ?>
                                                     <tr><td colspan="7" class="text-center text-muted fst-italic p-3">Belum ada data mata kuliah untuk semester ini.</td></tr>
                                                 <?php else: ?>
                                                     <?php $no=1; foreach($listMK as $row): ?>
@@ -167,7 +125,6 @@ foreach ($allData as $row) {
                                                         <td><?= htmlspecialchars($row['kode_mk']) ?></td>
                                                         <td><?= htmlspecialchars($row['nama_mk']) ?></td>
                                                         <td><?= htmlspecialchars($row['nama_dosen'] ?? '-') ?></td>
-                                                        
                                                         <td class="text-center">
                                                             <?php if (!empty($row['nama_kelas'])): ?>
                                                                 <a href="detail_kelas.php?id=<?= $row['kelas_id'] ?>" class="fw-bold text-decoration-none">
@@ -177,7 +134,6 @@ foreach ($allData as $row) {
                                                                 <span class="text-muted small">-</span>
                                                             <?php endif; ?>
                                                         </td>
-                                                        
                                                         <td class="text-center"><?= ($row['sifat'] == 'Wajib') ? 'W' : 'P' ?></td>
                                                         <td class="text-center"><?= $row['sks'] ?></td>
                                                     </tr>
@@ -186,18 +142,18 @@ foreach ($allData as $row) {
                                             </tbody>
                                         </table>
                                     </div>
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     <?php endfor; ?>
                 </div>
+
                 <div class="mt-4">
                     <strong style="color: #003366;">Petunjuk:</strong>
                     <ul class="ms-2 small text-muted">
                         <li>Klik link nama kelas untuk melihat detil kelas.</li>
                     </ul>
                 </div>
-
             </div>
         </div>
 
@@ -208,6 +164,5 @@ foreach ($allData as $row) {
 </div>
 <?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../assets/js/script.js"></script>
 </body>
 </html>

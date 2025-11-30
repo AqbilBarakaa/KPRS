@@ -53,7 +53,7 @@ $sb_prodi = $_SESSION['user']['prodi'] ?? 'TEKNIK INFORMATIKA';
     <ul class="menu-list">
         <li>
             <a href="dashboard.php" class="<?= $currentPage == 'dashboard.php' ? 'menu-active' : 'menu-default' ?>">
-                Halaman Depan
+                Dashboard
             </a>
         </li>
         <li>
@@ -72,14 +72,18 @@ $sb_prodi = $_SESSION['user']['prodi'] ?? 'TEKNIK INFORMATIKA';
                 Pengajuan Tambah Kelas
             </a>
         </li>
-            <?php if($currentPage == 'tambah_kelas.php' || $currentPage == 'tambah_kelas_history.php'): ?>
+            <?php if($currentPage == 'tambah_kelas.php' || $currentPage == 'validasi_tambah_kelas.php'): ?>
         <li style="padding-left: 15px;">
-            <a href="tambah_kelas_history.php" class="<?= $currentPage == 'tambah_kelas_history.php' ? 'fw-bold text-primary' : 'text-muted' ?>">
+            <a href="validasi_tambah_kelas.php" class="<?= $currentPage == 'validasi_tambah_kelas.php' ? 'fw-bold text-primary' : 'text-muted' ?>">
                 <small><i class="fas fa-history me-1"></i> Riwayat Pengajuan</small>
             </a>
         </li>
         <?php endif; ?>
-
+        <li>
+            <a href="pesan.php" class="<?= $currentPage == 'pesan.php' ? 'menu-active' : 'menu-default' ?>">
+                Pesan
+            </a>
+        </li>
         <li>
             <a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">
                 Ubah Password

@@ -49,7 +49,7 @@ $data = $pdo->query("SELECT * FROM tata_usaha ORDER BY nama ASC")->fetchAll();
         <div class="col-md-9">
             <div class="content-box">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="msg-header mb-0"><i class="fas fa-user-tie me-2"></i> Data Staff Tata Usaha</div>
+                    <div class="msg-header mb-0">Data Staff Tata Usaha</div>
                     <a href="staff_form.php" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Tambah Staff</a>
                 </div>
                 

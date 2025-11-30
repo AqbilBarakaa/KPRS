@@ -31,22 +31,15 @@ $raw_prasyarat = $kelas['prasyarat'];
 
 if (!empty($raw_prasyarat)) {
     $items = array_map('trim', explode(',', $raw_prasyarat));
-    
     foreach ($items as $item) {
         if (preg_match('/^(\d+)\s*(SKS|sks)$/i', $item)) {
-            $list_syarat[] = [
-                'kode' => '-',
-                'matakuliah' => "Total SKS Lulus: $item",
-                'syarat' => 'Terpenuhi'
-            ];
+            $list_syarat[] = ['kode' => '-','matakuliah' => "Total SKS Lulus: $item",'syarat' => 'Terpenuhi'];
         } else {
             $is_coreq = (substr($item, -1) === '*'); 
             $kode_bersih = rtrim($item, '*');
-            
             $stmtMK = $pdo->prepare("SELECT nama_mk FROM mata_kuliah WHERE kode_mk = ?");
             $stmtMK->execute([$kode_bersih]);
             $nama_mk_syarat = $stmtMK->fetchColumn();
-
             $list_syarat[] = [
                 'kode' => $kode_bersih,
                 'matakuliah' => $nama_mk_syarat ? $nama_mk_syarat : 'Mata Kuliah Tidak Ditemukan',
@@ -64,35 +57,6 @@ if (!empty($raw_prasyarat)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .detail-title {
-            color: #003366; font-weight: bold; font-size: 1.2rem;
-            margin-bottom: 15px; border-bottom: 2px solid #ddd; padding-bottom: 10px;
-        }
-        .table-detail th {
-            background-color: #f8f9fa;
-            width: 25%; 
-            color: #555;
-            vertical-align: top; 
-        }
-        
-        .table-prasyarat {
-            width: 100%;
-            margin-bottom: 0;
-            font-size: 0.9rem;
-        }
-        .table-prasyarat thead th {
-            background-color: #fff;
-            border-bottom: 2px solid #eee;
-            color: #003366;
-            font-weight: bold;
-            padding: 5px;
-        }
-        .table-prasyarat td {
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-        }
-    </style>
 </head>
 <body>
 
@@ -102,73 +66,42 @@ if (!empty($raw_prasyarat)) {
     <div class="row">
         <div class="col-md-9">
             <div class="content-box">
-                <div class="detail-title">
+                <div class="msg-header">
                     Detail Kelas: <?= htmlspecialchars($kelas['nama_mk']) ?> (<?= htmlspecialchars($kelas['nama_kelas']) ?>)
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table table-bordered table-detail">
-                            <tr>
-                                <th>Mata Kuliah</th>
-                                <td><?= htmlspecialchars($kelas['kode_mk']) ?> - <?= htmlspecialchars($kelas['nama_mk']) ?></td>
-                            </tr>
-                            <tr>
-                                <th>Kelas</th>
-                                <td class="fw-bold text-primary"><?= htmlspecialchars($kelas['nama_kelas']) ?></td>
-                            </tr>
-                            <tr>
-                                <th>Dosen Pengampu</th>
-                                <td><?= htmlspecialchars($kelas['nama_dosen']) ?> (NIDN: <?= htmlspecialchars($kelas['nidn']) ?>)</td>
-                            </tr>
-                            <tr>
-                                <th>SKS / Semester</th>
-                                <td><?= $kelas['sks'] ?> SKS / Semester <?= $kelas['semester'] ?></td>
-                            </tr>
-                            <tr>
-                                <th>Sifat</th>
-                                <td><?= ($kelas['sifat'] == 'Wajib') ? '<span class="badge bg-primary">Wajib</span>' : '<span class="badge bg-success">Pilihan</span>' ?></td>
-                            </tr>
-                            <tr>
-                                <th>Jadwal & Ruangan</th>
-                                <td>
-                                    <i class="far fa-calendar-alt text-muted me-1"></i> <?= $kelas['hari'] ?>, <?= substr($kelas['jam_mulai'],0,5) ?> - <?= substr($kelas['jam_selesai'],0,5) ?> WIB
-                                    <br>
-                                    <i class="fas fa-door-open text-muted me-1"></i> Ruang: <?= htmlspecialchars($kelas['ruangan'] ?? 'Belum ditentukan') ?>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <th>Prasyarat</th>
-                                <td class="p-2">
-                                    <?php if (empty($list_syarat)): ?>
-                                        <span class="text-muted">- Tidak ada prasyarat -</span>
-                                    <?php else: ?>
-                                        <table class="table-prasyarat">
-                                            <thead>
-                                                <tr>
-                                                    <th width="20%">Kode</th>
-                                                    <th width="50%">Matakuliah</th>
-                                                    <th width="30%">Syarat</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($list_syarat as $req): ?>
-                                                <tr>
-                                                    <td><?= htmlspecialchars($req['kode']) ?></td>
-                                                    <td><?= htmlspecialchars($req['matakuliah']) ?></td>
-                                                    <td><?= htmlspecialchars($req['syarat']) ?></td>
-                                                </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Minimal Kelulusan</th>
-                                <td>Grade: <b><?= htmlspecialchars($kelas['minimal_kelulusan'] ?? '-') ?></b></td>
-                            </tr>
+                            <tr><th>Mata Kuliah</th><td><?= htmlspecialchars($kelas['kode_mk']) ?> - <?= htmlspecialchars($kelas['nama_mk']) ?></td></tr>
+                            <tr><th>Kelas</th><td class="fw-bold text-primary"><?= htmlspecialchars($kelas['nama_kelas']) ?></td></tr>
+                            <tr><th>Dosen Pengampu</th><td><?= htmlspecialchars($kelas['nama_dosen']) ?> (NIDN: <?= htmlspecialchars($kelas['nidn']) ?>)</td></tr>
+                            <tr><th>SKS / Semester</th><td><?= $kelas['sks'] ?> SKS / Semester <?= $kelas['semester'] ?></td></tr>
+                            <tr><th>Sifat</th><td><?= ($kelas['sifat'] == 'Wajib') ? '<span class="badge bg-primary">Wajib</span>' : '<span class="badge bg-success">Pilihan</span>' ?></td></tr>
+                            <tr><th>Jadwal & Ruangan</th><td>
+                                <i class="far fa-calendar-alt text-muted me-1"></i> <?= $kelas['hari'] ?>, <?= substr($kelas['jam_mulai'],0,5) ?> - <?= substr($kelas['jam_selesai'],0,5) ?> WIB
+                                <br>
+                                <i class="fas fa-door-open text-muted me-1"></i> Ruang: <?= htmlspecialchars($kelas['ruangan'] ?? 'Belum ditentukan') ?>
+                            </td></tr>
+                            <tr><th>Prasyarat</th><td class="p-2">
+                                <?php if (empty($list_syarat)): ?>
+                                    <span class="text-muted">- Tidak ada prasyarat -</span>
+                                <?php else: ?>
+                                    <table class="table-prasyarat">
+                                        <thead><tr><th width="20%">Kode</th><th width="50%">Matakuliah</th><th width="30%">Syarat</th></tr></thead>
+                                        <tbody>
+                                            <?php foreach ($list_syarat as $req): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($req['kode']) ?></td>
+                                                <td><?= htmlspecialchars($req['matakuliah']) ?></td>
+                                                <td><?= htmlspecialchars($req['syarat']) ?></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php endif; ?>
+                            </td></tr>
+                            <tr><th>Minimal Kelulusan</th><td>Grade: <b><?= htmlspecialchars($kelas['minimal_kelulusan'] ?? '-') ?></b></td></tr>
                         </table>
                     </div>
                 </div>
@@ -178,17 +111,11 @@ if (!empty($raw_prasyarat)) {
                         <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
                     </a>
                 </div>
-
             </div>
         </div>
-
-        <div class="col-md-3">
-            <?php include "sidebar.php"; ?>
-        </div>
+        <div class="col-md-3"><?php include "sidebar.php"; ?></div>
     </div>
 </div>
 <?php include "../footer.php"; ?>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../assets/js/script.js"></script>
 </body>
 </html>

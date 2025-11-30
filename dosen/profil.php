@@ -34,7 +34,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
     <div class="row">
         <div class="col-md-9">
             <div class="content-box">
-                <div class="msg-header"><i class="fas fa-user-tie me-2"></i> Profil Dosen</div>
+                <div class="msg-header">Profil Dosen</div>
                 
                 <div class="row">
                     <div class="col-md-3 text-center mb-4">
