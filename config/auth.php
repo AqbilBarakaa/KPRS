@@ -89,12 +89,11 @@ class Auth {
         $tu = $stmt->fetch();
         if ($tu) {
             if ($this->verifyPassword($password, $tu['password'])) {
-                // PERUBAHAN: Hapus penyimpanan 'tu_role' karena sekarang hanya 1 role
                 $_SESSION['user'] = [
                     'id' => $tu['id'],
                     'username' => $tu['nip'],
                     'nama' => $tu['nama'],
-                    'role' => 'tu' // Role tunggal untuk semua staff TU
+                    'role' => 'tu'
                 ];
                 return true;
             }

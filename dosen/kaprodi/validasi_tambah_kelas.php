@@ -1,5 +1,4 @@
 <?php
-// dosen/kaprodi/validasi_tambah_kelas.php
 require_once "../../config/auth.php";
 require_once "../../config/database.php";
 
@@ -11,7 +10,6 @@ if (!$auth->isLoggedIn() || $_SESSION['user']['role'] !== 'dosen_kaprodi') {
 $kaprodi_id = $_SESSION['user']['id'];
 $msg = ''; $err = '';
 
-// --- PROSES VALIDASI ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_pengajuan = $_POST['id_pengajuan'];
     $aksi = $_POST['aksi']; 
@@ -20,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
         
-        // Ambil data pengajuan untuk lock row
         $stmtGet = $pdo->prepare("SELECT * FROM pengajuan_tambah_kelas WHERE id = ? FOR UPDATE");
         $stmtGet->execute([$id_pengajuan]);
         $data = $stmtGet->fetch();
@@ -30,19 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($aksi === 'approve') {
-            // 1. Update Status Pengajuan
             $pdo->prepare("UPDATE pengajuan_tambah_kelas SET status='approved', validator_id=?, catatan_validasi=?, tanggal_validasi=NOW() WHERE id=?")
                 ->execute([$kaprodi_id, $catatan, $id_pengajuan]);
-
-            // 2. Logika Tambahan: Jika pengajuan ini spesifik ke kelas tertentu (misal minta masuk kelas A yang penuh)
-            // maka update kuota. Tapi jika hanya request Matkul, Kaprodi mungkin harus membuka kelas baru manual di menu TU.
-            // Di sini kita asumsikan flow sederhana: Approve = Selesai.
-            
-            // (Opsional) Jika ada kelas_id, update terisi
+    
             if (!empty($data['kelas_id'])) {
                 $pdo->prepare("UPDATE kelas SET terisi = terisi + 1 WHERE id = ?")->execute([$data['kelas_id']]);
                 
-                // Masukkan ke KRS
                 $cekKrs = $pdo->prepare("SELECT id FROM krs_awal WHERE mahasiswa_id = ? AND kelas_id = ?");
                 $cekKrs->execute([$data['mahasiswa_id'], $data['kelas_id']]);
                 if ($cekKrs->rowCount() == 0) {
@@ -53,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $msg = "Pengajuan disetujui.";
         } else {
-            // Reject
             $pdo->prepare("UPDATE pengajuan_tambah_kelas SET status='rejected', validator_id=?, catatan_validasi=?, tanggal_validasi=NOW() WHERE id=?")
                 ->execute([$kaprodi_id, $catatan, $id_pengajuan]);
             $msg = "Pengajuan ditolak.";
@@ -65,8 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- AMBIL DATA & GROUPING ---
-// Kita ambil semua pending, diurutkan berdasarkan Nama MK agar mudah dikelompokkan
 $query = "
     SELECT p.*, m.nim, m.nama as nama_mhs, 
            mk.kode_mk, mk.nama_mk, 
@@ -80,7 +67,6 @@ $query = "
 ";
 $rawData = $pdo->query($query)->fetchAll();
 
-// Proses Grouping by Mata Kuliah
 $groupedData = [];
 foreach ($rawData as $row) {
     $key = $row['kode_mk'] . " - " . $row['nama_mk'];
@@ -98,7 +84,7 @@ foreach ($rawData as $row) {
 </head>
 <body>
 
-<?php include "../header.php"; ?>
+<?php include "../../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -189,7 +175,7 @@ foreach ($rawData as $row) {
         </div>
     </div>
 </div>
-
+<?php include "../../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

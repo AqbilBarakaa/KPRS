@@ -41,7 +41,7 @@ $dataMhs = $pdo->query($query)->fetchAll();
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -87,12 +87,11 @@ $dataMhs = $pdo->query($query)->fetchAll();
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <?php include "sidebar.php"; ?>
         </div>
-
     </div>
 </div>
+<?php include "../footer.php"; ?>
 </body>
 </html>

@@ -1,18 +1,13 @@
 <?php
-// dosen/perwalian.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
-// Cek akses: Bisa Dosen Biasa atau Dosen DPA (Kaprodi juga bisa jika merangkap DPA)
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa', 'dosen_kaprodi'])) {
     header("Location: ../login.php"); exit;
 }
 
 $dosen_id = $_SESSION['user']['id'];
-
-// --- AMBIL DATA MAHASISWA BINAAN ---
-// Mengambil data mahasiswa yang dpa_id-nya adalah ID dosen yang login
 $query = "
     SELECT m.*, ps.nama_prodi,
            (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'terdaftar') as total_mk
@@ -39,7 +34,7 @@ $listMhs = $stmt->fetchAll();
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -86,10 +81,10 @@ $listMhs = $stmt->fetchAll();
                                     <span class="badge bg-info text-dark"><?= $row['total_mk'] ?> MK</span>
                                 </td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-primary btn-sm" title="Lihat Detail (Coming Soon)">
+                                    <a href="#" class="btn btn-primary btn-sm" title="Lihat Detail">
                                         <i class="fas fa-search"></i>
                                     </a>
-                                    <a href="#" class="btn btn-success btn-sm" title="Konsultasi (Coming Soon)">
+                                    <a href="#" class="btn btn-success btn-sm" title="Konsultasi">
                                         <i class="fas fa-comments"></i>
                                     </a>
                                 </td>
@@ -105,10 +100,8 @@ $listMhs = $stmt->fetchAll();
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

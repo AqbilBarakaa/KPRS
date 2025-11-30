@@ -1,5 +1,4 @@
 <?php
-// tu/matakuliah.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -8,7 +7,6 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') {
     header("Location: ../login.php"); exit;
 }
 
-// --- HAPUS DATA ---
 if (isset($_POST['hapus_id'])) {
     try {
         $pdo->prepare("DELETE FROM mata_kuliah WHERE id = ?")->execute([$_POST['hapus_id']]);
@@ -17,15 +15,12 @@ if (isset($_POST['hapus_id'])) {
     }
 }
 
-// --- AMBIL DATA (DIPISAH WAJIB & PILIHAN) ---
-// 1. Mata Kuliah Wajib
 $mkWajib = $pdo->query("SELECT mk.*, ps.nama_prodi 
                         FROM mata_kuliah mk 
                         LEFT JOIN program_studi ps ON mk.prodi_id = ps.id 
                         WHERE mk.sifat = 'Wajib' 
                         ORDER BY mk.semester ASC, mk.kode_mk ASC")->fetchAll();
 
-// 2. Mata Kuliah Pilihan
 $mkPilihan = $pdo->query("SELECT mk.*, ps.nama_prodi 
                           FROM mata_kuliah mk 
                           LEFT JOIN program_studi ps ON mk.prodi_id = ps.id 
@@ -43,7 +38,7 @@ $mkPilihan = $pdo->query("SELECT mk.*, ps.nama_prodi
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -144,7 +139,7 @@ $mkPilihan = $pdo->query("SELECT mk.*, ps.nama_prodi
         </div>
     </div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

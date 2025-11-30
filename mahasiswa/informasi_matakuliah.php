@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/informasi_matakuliah.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,28 +9,22 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 
 $user = $_SESSION['user'];
 
-// --- 1. AMBIL DAFTAR PROGRAM STUDI (Untuk Dropdown) ---
 $stmtProdi = $pdo->query("SELECT * FROM program_studi ORDER BY nama_prodi ASC");
 $listProdi = $stmtProdi->fetchAll();
 
-// --- 2. TENTUKAN PRODI TERPILIH ---
-// Prioritas: 1. Dari URL (GET), 2. Dari Session User (default), 3. Data Pertama di DB
 $selected_prodi_id = $_GET['prodi_id'] ?? null;
 
 if (!$selected_prodi_id) {
-    // Coba cari ID prodi user yang sedang login (match by nama)
     $userProdiName = $user['prodi'] ?? '';
     $stmtFind = $pdo->prepare("SELECT id FROM program_studi WHERE nama_prodi = ?");
     $stmtFind->execute([$userProdiName]);
     $selected_prodi_id = $stmtFind->fetchColumn();
 
-    // Jika tidak ketemu, pakai data pertama dari list
     if (!$selected_prodi_id && count($listProdi) > 0) {
         $selected_prodi_id = $listProdi[0]['id'];
     }
 }
 
-// --- 3. AMBIL DATA MATAKULIAH & KELAS (FILTER BY PRODI) ---
 $query = "
     SELECT mk.semester, mk.kode_mk, mk.nama_mk, mk.sks, mk.sifat, 
            k.id as kelas_id, k.nama_kelas, 
@@ -46,7 +39,6 @@ $stmt = $pdo->prepare($query);
 $stmt->execute([$selected_prodi_id]);
 $allData = $stmt->fetchAll();
 
-// Grouping Data Berdasarkan Semester
 $dataPerSemester = [];
 for ($i = 1; $i <= 8; $i++) {
     $dataPerSemester[$i] = [];
@@ -108,7 +100,7 @@ foreach ($allData as $row) {
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -213,10 +205,8 @@ foreach ($allData as $row) {
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/script.js"></script>
 </body>

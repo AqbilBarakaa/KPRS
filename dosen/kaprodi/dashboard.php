@@ -10,7 +10,6 @@ if (!$auth->isLoggedIn() || $_SESSION['user']['role'] !== 'dosen_kaprodi') {
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 
-// Hitung Statistik Pending
 $pendingCount = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE status = 'pending'")->fetchColumn();
 ?>
 <!DOCTYPE html>
@@ -24,7 +23,7 @@ $pendingCount = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE s
 </head>
 <body>
 
-<?php include "../header.php"; ?>
+<?php include "../../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -62,10 +61,8 @@ $pendingCount = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE s
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-// tu/kelas_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 $auth = new Auth();
@@ -7,7 +6,7 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') { header
 
 $id = $_GET['id'] ?? null; $is_edit = !empty($id);
 $mk_id=''; $nm_kls=''; $dos_id=''; $hari=''; $j_mulai=''; $j_selesai=''; $kuota=40; 
-$ruangan=''; // Variabel Baru
+$ruangan=''; 
 $err='';
 
 if ($is_edit) {
@@ -15,13 +14,13 @@ if ($is_edit) {
     if($r){ 
         $mk_id=$r['mata_kuliah_id']; $nm_kls=$r['nama_kelas']; $dos_id=$r['dosen_pengampu_id']; 
         $hari=$r['hari']; $j_mulai=$r['jam_mulai']; $j_selesai=$r['jam_selesai']; 
-        $kuota=$r['kuota']; $ruangan=$r['ruangan']; // Load Ruangan
+        $kuota=$r['kuota']; $ruangan=$r['ruangan']; 
     }
 }
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
     $mk=$_POST['mk']; $nm=$_POST['nm']; $dos=$_POST['dos']; $hr=$_POST['hr']; 
-    $jm=$_POST['jm']; $js=$_POST['js']; $k=$_POST['k']; $rng=$_POST['rng']; // Ambil Ruangan
+    $jm=$_POST['jm']; $js=$_POST['js']; $k=$_POST['k']; $rng=$_POST['rng']; 
 
     try {
         if($is_edit) {
@@ -43,7 +42,7 @@ $listHari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 <html lang="id">
 <head><meta charset="utf-8"><title>Form Kelas</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="../assets/css/style.css"></head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container mt-4"><div class="row justify-content-center"><div class="col-md-8"><div class="card shadow">
     <div class="card-header bg-primary text-white">Form Jadwal Kelas</div>
     <div class="card-body">
@@ -82,4 +81,6 @@ $listHari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
         </form>
     </div>
 </div></div></div></div>
-</body></html>
+<?php include "../footer.php"; ?>
+</body>
+</html>

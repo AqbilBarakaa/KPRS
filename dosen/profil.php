@@ -1,10 +1,8 @@
 <?php
-// dosen/profil.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
-// Cek akses (bisa dosen biasa atau kaprodi)
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa', 'dosen_kaprodi'])) {
     header("Location: ../login.php"); exit;
 }
@@ -30,7 +28,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -70,14 +68,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
 
         <div class="col-md-3">
             <?php 
-                // Deteksi apakah yang login Kaprodi atau Dosen biasa untuk include sidebar yang benar
-                // Namun karena ini file di root 'dosen/', kita pakai sidebar.php default dosen
-                // Jika Kaprodi mengakses ini, sidebar mungkin perlu disesuaikan
-                // Solusi: Cek session role
                 if ($_SESSION['user']['role'] == 'dosen_kaprodi') {
-                     // Kaprodi biasanya punya sidebar sendiri di folder kaprodi/sidebar.php
-                     // Tapi karena kita ada di root dosen/, kita include sidebar.php ini
-                     // dan sidebar.php ini harus cukup pintar atau kita buat sidebar_kaprodi_link.
                      include "sidebar.php"; 
                 } else {
                      include "sidebar.php"; 
@@ -86,6 +77,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
         </div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@ $data = $pdo->query($query)->fetchAll();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container">
     <div class="row">
         
@@ -64,6 +64,7 @@ $data = $pdo->query($query)->fetchAll();
 
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

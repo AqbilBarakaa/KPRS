@@ -1,5 +1,4 @@
 <?php
-// tu/dosen_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -27,14 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama = $_POST['nama'];
     $email = $_POST['email'];
     $jabatan = $_POST['jabatan'];
-    $prodi = $_POST['prodi']; // Nilai ini berisi Nama Prodi (String)
+    $prodi = $_POST['prodi']; 
     $password = $_POST['password'];
 
     if (!$nidn || !$nama) {
         $err = "NIDN dan Nama wajib diisi.";
     } else {
         try {
-            // --- UPLOAD FOTO ---
             $foto_nama = $foto_db; 
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
                 $file_tmp = $_FILES['foto']['tmp_name'];
@@ -55,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($is_edit) {
-                // Update
                 $sql = "UPDATE dosen SET nidn=?, nama=?, email=?, jabatan=?, prodi=?, foto=? WHERE id=?";
                 $pdo->prepare($sql)->execute([$nidn, $nama, $email, $jabatan, $prodi, $foto_nama, $id]);
                 
@@ -64,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("UPDATE dosen SET password=? WHERE id=?")->execute([$hash, $id]);
                 }
             } else {
-                // Insert
                 $cek = $pdo->prepare("SELECT id FROM dosen WHERE nidn=?");
                 $cek->execute([$nidn]);
                 if ($cek->rowCount() > 0) {
@@ -80,11 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Preview Foto
 $fotoPath = "../assets/img/uploads/" . ($foto_db ?? 'default.png');
 $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoPath : "https://via.placeholder.com/150x180.png?text=FOTO";
 
-// --- AMBIL DATA PRODI UNTUK DROPDOWN ---
 $listProdi = $pdo->query("SELECT * FROM program_studi ORDER BY nama_prodi ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -96,7 +90,7 @@ $listProdi = $pdo->query("SELECT * FROM program_studi ORDER BY nama_prodi ASC")-
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -153,5 +147,6 @@ $listProdi = $pdo->query("SELECT * FROM program_studi ORDER BY nama_prodi ASC")-
         </div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 </body>
 </html>

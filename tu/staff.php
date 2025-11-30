@@ -1,5 +1,4 @@
 <?php
-// tu/staff.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,7 +9,6 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') {
 
 $msg = ''; $err = '';
 
-// --- HAPUS DATA ---
 if (isset($_POST['hapus_id'])) {
     if ($_POST['hapus_id'] == $_SESSION['user']['id']) {
         $err = "Tidak dapat menghapus akun yang sedang digunakan.";
@@ -32,7 +30,6 @@ if (isset($_POST['hapus_id'])) {
     }
 }
 
-// --- AMBIL DATA ---
 $data = $pdo->query("SELECT * FROM tata_usaha ORDER BY nama ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -45,7 +42,7 @@ $data = $pdo->query("SELECT * FROM tata_usaha ORDER BY nama ASC")->fetchAll();
     <style>.table-foto { width: 40px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }</style>
 </head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container">
     <div class="row">
         
@@ -96,5 +93,6 @@ $data = $pdo->query("SELECT * FROM tata_usaha ORDER BY nama ASC")->fetchAll();
 
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body></html>

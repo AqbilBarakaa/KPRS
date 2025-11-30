@@ -1,5 +1,4 @@
 <?php
-// tu/prodi_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,7 +9,6 @@ $id = $_GET['id'] ?? null;
 $is_edit = !empty($id);
 $kode = ''; $nama = ''; $kaprodi_id = ''; $err = '';
 
-// Load Data Edit
 if ($is_edit) {
     $stmt = $pdo->prepare("SELECT * FROM program_studi WHERE id = ?");
     $stmt->execute([$id]);
@@ -22,7 +20,6 @@ if ($is_edit) {
     }
 }
 
-// Proses Simpan
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kode = strtoupper(trim($_POST['kode']));
     $nama = trim($_POST['nama']);
@@ -36,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "UPDATE program_studi SET kode_prodi=?, nama_prodi=?, kaprodi_id=? WHERE id=?";
                 $pdo->prepare($sql)->execute([$kode, $nama, $kaprodi, $id]);
             } else {
-                // Cek Kode Unik
                 $cek = $pdo->prepare("SELECT id FROM program_studi WHERE kode_prodi=?");
                 $cek->execute([$kode]);
                 if ($cek->rowCount() > 0) throw new Exception("Kode Prodi '$kode' sudah ada.");
@@ -49,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Ambil Daftar Dosen untuk Pilihan Kaprodi
-// Kita ambil semua dosen, atau bisa difilter hanya yang jabatannya 'Kaprodi' jika konsisten
 $listDosen = $pdo->query("SELECT id, nidn, nama FROM dosen ORDER BY nama ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -61,7 +55,7 @@ $listDosen = $pdo->query("SELECT id, nidn, nama FROM dosen ORDER BY nama ASC")->
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -102,4 +96,5 @@ $listDosen = $pdo->query("SELECT id, nidn, nama FROM dosen ORDER BY nama ASC")->
         </div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 </body></html>

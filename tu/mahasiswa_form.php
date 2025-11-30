@@ -1,5 +1,4 @@
 <?php
-// tu/mahasiswa_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -14,10 +13,8 @@ $is_edit = !empty($id);
 $msg = '';
 $err = '';
 
-// Default values
 $nim = ''; $nama = ''; $jk = ''; $prodi = ''; $semester = 1; $email = ''; $dpa_id = ''; $foto_db = '';
 
-// --- LOAD DATA UNTUK EDIT ---
 if ($is_edit) {
     $stmt = $pdo->prepare("SELECT * FROM mahasiswa WHERE id = ?");
     $stmt->execute([$id]);
@@ -36,7 +33,6 @@ if ($is_edit) {
     }
 }
 
-// --- PROSES SIMPAN ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nim_in = trim($_POST['nim']);
     $nama_in = trim($_POST['nama']);
@@ -51,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $err = "NIM, Nama, Jenis Kelamin, dan Prodi wajib diisi.";
     } else {
         try {
-            // Upload Foto
             $foto_nama = $foto_db; 
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
                 $file_tmp = $_FILES['foto']['tmp_name'];
@@ -72,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($is_edit) {
-                // UPDATE
                 $sql = "UPDATE mahasiswa SET nim=?, nama=?, jenis_kelamin=?, prodi=?, semester=?, email=?, dpa_id=?, foto=? WHERE id=?";
                 $params = [$nim_in, $nama_in, $jk_in, $prodi_in, $sem_in, $email_in, $dpa_in, $foto_nama, $id];
                 $stmtUpd = $pdo->prepare($sql);
@@ -85,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: mahasiswa.php?msg=updated"); exit;
 
             } else {
-                // INSERT
                 $cek = $pdo->prepare("SELECT id FROM mahasiswa WHERE nim = ?");
                 $cek->execute([$nim_in]);
                 if ($cek->rowCount() > 0) {
@@ -103,8 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- AMBIL DAFTAR DOSEN (FILTER: BUKAN KAPRODI) ---
-// Perbaikan Logika: Hanya ambil yang jabatannya 'Dosen'
 $listDosen = $pdo->query("SELECT id, nidn, nama FROM dosen WHERE jabatan = 'Dosen' ORDER BY nama ASC")->fetchAll();
 
 $listProdi = ['Teknik Informatika', 'Sistem Informasi', 'Teknik Industri', 'Teknik Mekatronika']; 
@@ -120,7 +111,7 @@ $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoP
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-
+<?php include "../header.php"; ?>
 <div class="header-portal">
     <div class="container">
         <div class="header-title">
@@ -223,6 +214,6 @@ $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoP
         </div>
     </div>
 </div>
-
+<?php include "../footer.php"; ?>
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-// tu/prodi.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,7 +9,6 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') {
 
 $msg = ''; $err = '';
 
-// --- HAPUS DATA ---
 if (isset($_POST['hapus_id'])) {
     try {
         $pdo->prepare("DELETE FROM program_studi WHERE id = ?")->execute([$_POST['hapus_id']]);
@@ -20,8 +18,6 @@ if (isset($_POST['hapus_id'])) {
     }
 }
 
-// --- AMBIL DATA ---
-// Join ke tabel dosen untuk mengambil nama Kaprodi
 $query = "SELECT ps.*, d.nama as nama_kaprodi 
           FROM program_studi ps 
           LEFT JOIN dosen d ON ps.kaprodi_id = d.id 
@@ -38,7 +34,7 @@ $dataProdi = $pdo->query($query)->fetchAll();
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -91,6 +87,7 @@ $dataProdi = $pdo->query($query)->fetchAll();
     <div class="col-md-3"><?php include "sidebar.php"; ?></div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

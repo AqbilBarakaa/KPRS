@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/tambah_kelas.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -11,10 +10,8 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 $mahasiswa_id = $_SESSION['user']['id'];
 $message = ''; $error = '';
 
-// Ambil Filter Semester dari GET atau Default 1
 $filter_semester = $_GET['sem'] ?? 1;
 
-// --- PROSES PENGAJUAN ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mk_id = $_POST['mk_id'] ?? '';
     $alasan = trim($_POST['alasan'] ?? '');
@@ -23,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Harap pilih mata kuliah dan isi alasan pengajuan.";
     } else {
         try {
-            // 1. Ambil Info Mata Kuliah & Prasyarat
             $stmtMK = $pdo->prepare("SELECT kode_mk, nama_mk, prasyarat FROM mata_kuliah WHERE id = ?");
             $stmtMK->execute([$mk_id]);
             $mkInfo = $stmtMK->fetch();
@@ -33,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $prasyaratStr = $mkInfo['prasyarat'];
 
-                // 2. Cek Prasyarat
                 $memenuhiSyarat = true;
                 $alasanGagal = "";
 
@@ -66,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$memenuhiSyarat) {
                     $error = "<b>Syarat Tidak Terpenuhi:</b> " . $alasanGagal;
                 } else {
-                    // 3. Simpan Pengajuan
                     $cekPending = $pdo->prepare("SELECT id FROM pengajuan_tambah_kelas WHERE mahasiswa_id = ? AND mata_kuliah_id = ? AND status = 'pending'");
                     $cekPending->execute([$mahasiswa_id, $mk_id]);
 
@@ -84,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- AMBIL DAFTAR MATAKULIAH SESUAI SEMESTER TERPILIH ---
 $stmtListMK = $pdo->prepare("SELECT id, kode_mk, nama_mk, prasyarat FROM mata_kuliah WHERE semester = ? ORDER BY nama_mk ASC");
 $stmtListMK->execute([$filter_semester]);
 $listMK = $stmtListMK->fetchAll();
@@ -100,7 +93,7 @@ $listMK = $stmtListMK->fetchAll();
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -170,7 +163,7 @@ $listMK = $stmtListMK->fetchAll();
         </div>
     </div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/script.js"></script>
 </body>

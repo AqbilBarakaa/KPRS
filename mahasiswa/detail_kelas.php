@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/detail_kelas.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,7 +9,6 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 
 $id_kelas = $_GET['id'] ?? 0;
 
-// 1. Ambil Detail Kelas Lengkap
 $stmt = $pdo->prepare("
     SELECT k.*, 
            mk.kode_mk, mk.nama_mk, mk.sks, mk.semester, mk.sifat, mk.prasyarat, mk.minimal_kelulusan,
@@ -28,16 +26,13 @@ if (!$kelas) {
     exit;
 }
 
-// 2. LOGIKA PARSING PRASYARAT UNTUK TABEL
 $list_syarat = [];
 $raw_prasyarat = $kelas['prasyarat'];
 
 if (!empty($raw_prasyarat)) {
-    // Pecah string berdasarkan koma
     $items = array_map('trim', explode(',', $raw_prasyarat));
     
     foreach ($items as $item) {
-        // Cek apakah ini syarat SKS (misal: "50 SKS")
         if (preg_match('/^(\d+)\s*(SKS|sks)$/i', $item)) {
             $list_syarat[] = [
                 'kode' => '-',
@@ -45,11 +40,9 @@ if (!empty($raw_prasyarat)) {
                 'syarat' => 'Terpenuhi'
             ];
         } else {
-            // Ini adalah Kode Matakuliah (misal: "IF2214" atau "IF2226*")
-            $is_coreq = (substr($item, -1) === '*'); // Cek tanda bintang
+            $is_coreq = (substr($item, -1) === '*'); 
             $kode_bersih = rtrim($item, '*');
             
-            // Ambil Nama Matakuliah dari DB
             $stmtMK = $pdo->prepare("SELECT nama_mk FROM mata_kuliah WHERE kode_mk = ?");
             $stmtMK->execute([$kode_bersih]);
             $nama_mk_syarat = $stmtMK->fetchColumn();
@@ -78,12 +71,11 @@ if (!empty($raw_prasyarat)) {
         }
         .table-detail th {
             background-color: #f8f9fa;
-            width: 25%; /* Lebar label sebelah kiri */
+            width: 25%; 
             color: #555;
-            vertical-align: top; /* Agar teks label di atas jika konten kanan panjang */
+            vertical-align: top; 
         }
         
-        /* Styling Tabel Prasyarat di dalam sel */
         .table-prasyarat {
             width: 100%;
             margin-bottom: 0;
@@ -104,7 +96,7 @@ if (!empty($raw_prasyarat)) {
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -194,10 +186,8 @@ if (!empty($raw_prasyarat)) {
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/script.js"></script>
 </body>

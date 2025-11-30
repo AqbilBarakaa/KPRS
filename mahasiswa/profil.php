@@ -30,7 +30,7 @@ $fotoProfilBesar = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath
 </head>
 <body>
 
-<?php include 'header.php'; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -67,9 +67,8 @@ $fotoProfilBesar = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath
             <?php include 'sidebar.php'; ?>
         </div>
     </div>
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/script.js"></script>
 </body>

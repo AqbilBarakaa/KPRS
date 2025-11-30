@@ -1,5 +1,4 @@
 <?php
-// tu/dosen.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -10,19 +9,15 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') {
 
 $msg = ''; $err = '';
 
-// --- HAPUS DATA ---
 if (isset($_POST['hapus_id'])) {
     $id = $_POST['hapus_id'];
     try {
-        // Ambil nama foto sebelum dihapus
         $stmtGet = $pdo->prepare("SELECT foto FROM dosen WHERE id = ?");
         $stmtGet->execute([$id]);
         $fotoLama = $stmtGet->fetchColumn();
 
-        // Hapus data
         $pdo->prepare("DELETE FROM dosen WHERE id = ?")->execute([$id]);
 
-        // Hapus file fisik
         if ($fotoLama && file_exists("../assets/img/uploads/" . $fotoLama)) {
             unlink("../assets/img/uploads/" . $fotoLama);
         }
@@ -32,7 +27,6 @@ if (isset($_POST['hapus_id'])) {
     }
 }
 
-// --- AMBIL DATA ---
 $dosenBiasa = $pdo->query("SELECT * FROM dosen WHERE jabatan = 'Dosen' ORDER BY nama ASC")->fetchAll();
 $kaprodi = $pdo->query("SELECT * FROM dosen WHERE jabatan = 'Kaprodi' ORDER BY nama ASC")->fetchAll();
 ?>
@@ -46,9 +40,7 @@ $kaprodi = $pdo->query("SELECT * FROM dosen WHERE jabatan = 'Kaprodi' ORDER BY n
     <style>.table-foto { width: 40px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }</style>
 </head>
 <body>
-
-<?php include "header.php"; ?>
-
+<?php include "../header.php"; ?>
 <div class="container">
     <div class="row">
         
@@ -142,7 +134,7 @@ $kaprodi = $pdo->query("SELECT * FROM dosen WHERE jabatan = 'Kaprodi' ORDER BY n
 
     </div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

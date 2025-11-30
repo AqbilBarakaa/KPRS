@@ -1,5 +1,4 @@
 <?php
-// tu/profil.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -15,7 +14,6 @@ $data = $stmt->fetch();
 
 if (!$data) $auth->logout();
 
-// Foto
 $fotoPath = "../assets/img/uploads/" . ($data['foto'] ?? 'default.png');
 $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "https://via.placeholder.com/150x180.png?text=FOTO";
 ?>
@@ -30,7 +28,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -63,6 +61,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
         <div class="col-md-3"><?php include "sidebar.php"; ?></div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

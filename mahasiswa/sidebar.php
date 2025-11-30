@@ -1,10 +1,6 @@
 <?php
-// mahasiswa/sidebar.php
-
-// 1. Deteksi Halaman Aktif
 $currentPage = basename($_SERVER['PHP_SELF']);
 
-// 2. Logika Foto Otomatis (Cek Database jika belum diset)
 if (!isset($fotoSidebarUrl)) {
     global $pdo; 
     $sb_uid = $_SESSION['user']['id'] ?? 0;
@@ -19,7 +15,6 @@ if (!isset($fotoSidebarUrl)) {
     }
 
     $pathFisik = "assets/img/uploads/" . ($sb_foto ?? 'default.png');
-    // Cek path relatif (asumsi dipanggil dari folder mahasiswa/)
     $checkPath = "../" . $pathFisik; 
     
     if (!empty($sb_foto) && file_exists(__DIR__ . "/../" . $checkPath)) {
@@ -31,7 +26,6 @@ if (!isset($fotoSidebarUrl)) {
     }
 }
 
-// 3. Data User
 $sb_nama  = $_SESSION['user']['nama'] ?? 'Mahasiswa';
 $sb_nim   = $_SESSION['user']['username'] ?? '-';
 $sb_prodi = $_SESSION['user']['prodi'] ?? 'TEKNIK INFORMATIKA'; 

@@ -1,5 +1,4 @@
 <?php
-// tu/staff_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $err = "NIP dan Nama wajib diisi.";
     } else {
         try {
-            // Upload Foto
             $foto_nama = $foto_db;
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
                 $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
@@ -41,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($is_edit) {
-                // UPDATE (Tanpa kolom role)
                 $sql = "UPDATE tata_usaha SET nip=?, nama=?, email=?, foto=? WHERE id=?";
                 $pdo->prepare($sql)->execute([$nip, $nama, $email, $foto_nama, $id]);
                 if (!empty($password)) {
@@ -49,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("UPDATE tata_usaha SET password=? WHERE id=?")->execute([$hash, $id]);
                 }
             } else {
-                // INSERT (Tanpa kolom role)
                 $cek = $pdo->prepare("SELECT id FROM tata_usaha WHERE nip=?");
                 $cek->execute([$nip]);
                 if ($cek->rowCount() > 0) throw new Exception("NIP sudah terdaftar.");
@@ -68,7 +64,7 @@ $fotoPreview = ($is_edit && !empty($foto_db) && file_exists("../assets/img/uploa
 <html lang="id">
 <head><meta charset="utf-8"><title>Form Staff TU</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="../assets/css/style.css"></head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container mt-4"><div class="row justify-content-center"><div class="col-md-8"><div class="card shadow">
     <div class="card-header bg-primary text-white">Form Staff Tata Usaha</div>
     <div class="card-body">
@@ -92,4 +88,5 @@ $fotoPreview = ($is_edit && !empty($foto_db) && file_exists("../assets/img/uploa
         </form>
     </div>
 </div></div></div></div>
+<?php include "../footer.php"; ?>
 </body></html>

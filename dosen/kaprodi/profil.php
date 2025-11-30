@@ -1,5 +1,4 @@
 <?php
-// dosen/kaprodi/profil.php
 require_once "../../config/auth.php";
 require_once "../../config/database.php";
 
@@ -13,7 +12,6 @@ $stmt = $pdo->prepare("SELECT * FROM dosen WHERE id = ?");
 $stmt->execute([$user_id]);
 $data = $stmt->fetch();
 
-// Foto (Path mundur 2 langkah)
 $fotoPath = "../../assets/img/uploads/" . ($data['foto'] ?? 'default.png');
 $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "https://via.placeholder.com/150x180.png?text=FOTO";
 ?>
@@ -28,7 +26,7 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
 </head>
 <body>
 
-<?php include "../header.php"; ?>
+<?php include "../../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -62,5 +60,6 @@ $fotoUrl = (!empty($data['foto']) && file_exists($fotoPath)) ? $fotoPath : "http
         </div>
     </div>
 </div>
+<?php include "../../footer.php"; ?>
 </body>
 </html>

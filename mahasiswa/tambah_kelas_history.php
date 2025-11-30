@@ -31,7 +31,7 @@ $riwayat = $stmt->fetchAll();
 </head>
 <body>
 
-<?php include 'header.php'; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -76,6 +76,7 @@ $riwayat = $stmt->fetchAll();
         </div>
     </div>
 </div>
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

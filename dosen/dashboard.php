@@ -9,6 +9,19 @@ if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dose
 
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
+$hariIndo = ['Sunday'=>'Minggu','Monday'=>'Senin','Tuesday'=>'Selasa','Wednesday'=>'Rabu','Thursday'=>'Kamis','Friday'=>'Jumat','Saturday'=>'Sabtu'];
+$hariIni = $hariIndo[date('l')];
+$id_dosen = $user['id'];
+
+$stmtJadwal = $pdo->prepare("
+    SELECT k.*, mk.nama_mk, mk.kode_mk 
+    FROM kelas k 
+    JOIN mata_kuliah mk ON k.mata_kuliah_id = mk.id 
+    WHERE k.dosen_pengampu_id = ? AND k.hari = ? 
+    ORDER BY k.jam_mulai ASC
+");
+$stmtJadwal->execute([$id_dosen, $hariIni]);
+$jadwalHariIni = $stmtJadwal->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -21,7 +34,7 @@ $nama = htmlspecialchars($user['nama']);
 </head>
 <body>
 
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -36,20 +49,25 @@ $nama = htmlspecialchars($user['nama']);
             <div class="row">
                 <div class="col-md-6">
                     <div class="card text-white bg-primary mb-3">
-                        <div class="card-header">Jadwal Mengajar</div>
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-calendar-alt me-2"></i> Hari Ini</h5>
-                            <p class="card-text">Tidak ada jadwal kuliah hari ini.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card text-white bg-success mb-3">
-                        <div class="card-header">Perwalian</div>
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-users me-2"></i> Mahasiswa Bimbingan</h5>
-                            <p class="card-text">Kelola KRS dan konsultasi mahasiswa wali Anda.</p>
-                        </div>
+                        <div class="card-header">Jadwal Mengajar (<?= $hariIni ?>)</div> <div class="card-body">
+                            <?php if(empty($jadwalHariIni)): ?>
+                                <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i> Bebas Tugas</h5>
+                                <p class="card-text">Tidak ada jadwal kuliah hari ini.</p>
+                            <?php else: ?>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach($jadwalHariIni as $j): ?>
+                                    <li class="mb-2 border-bottom border-light pb-1">
+                                        <i class="fas fa-clock me-1"></i> <strong><?= substr($j['jam_mulai'],0,5) ?></strong> 
+                                        - <?= $j['kode_mk'] ?> <?= $j['nama_mk'] ?> 
+                                        (Kelas <?= $j['nama_kelas'] ?>)
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <div class="mt-2 text-end">
+                                    <a href="jadwal_mengajar.php" class="text-white small text-decoration-underline">Lihat semua</a>
+                                </div>
+                            <?php endif; ?>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -59,10 +77,8 @@ $nama = htmlspecialchars($user['nama']);
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-// tu/ubah_password.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -21,12 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($pass_baru !== $pass_ulangi) {
         $err = "Password baru tidak cocok.";
     } else {
-        // Ambil password lama dari tabel tata_usaha
         $stmt = $pdo->prepare("SELECT password FROM tata_usaha WHERE id = ?");
         $stmt->execute([$user_id]);
         $current = $stmt->fetchColumn();
 
-        // Verifikasi password lama
         $is_valid = false;
         if (strpos($current, '$2y$') === 0) {
             $is_valid = password_verify($pass_lama, $current);
@@ -37,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$is_valid) {
             $err = "Password lama salah.";
         } else {
-            // Update password baru
             $new_hash = password_hash($pass_baru, PASSWORD_DEFAULT);
             $pdo->prepare("UPDATE tata_usaha SET password = ? WHERE id = ?")->execute([$new_hash, $user_id]);
             $msg = "Password berhasil diubah.";
@@ -54,9 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-
-<?php include "header.php"; ?>
-
+<?php include "../header.php"; ?>
 <div class="container">
     <div class="row">
         <div class="col-md-9">
@@ -110,10 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php include "sidebar.php"; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-5 mb-3 text-muted small">Portal Akademik Kelompok 5 &copy; 2025.</div>
 </div>
-
+<?php include "../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script src="../assets/js/script.js"></script>

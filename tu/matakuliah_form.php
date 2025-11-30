@@ -1,5 +1,4 @@
 <?php
-// tu/matakuliah_form.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -9,7 +8,6 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'tu') { header
 $id = $_GET['id'] ?? null;
 $is_edit = !empty($id);
 
-// Default Values
 $kode = ''; $nama = ''; $sks = 2; $sem = 1; $prodi_id = ''; $prasyarat = ''; $sifat = 'Wajib'; 
 $min_lulus = 'C'; 
 $err='';
@@ -34,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sifat = $_POST['sifat'];
     $min_lulus = $_POST['min_lulus']; 
 
-    // --- VALIDASI INPUT ---
     $prefixIF = substr($kode, 0, 4);
     $prefixUNG = substr($kode, 0, 3);
 
@@ -45,10 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (empty($nama)) {
         $err = "Nama Mata Kuliah tidak valid.";
     } elseif ($sks < 1 || $sks > 4) { 
-        // Validasi SKS (Max 4)
         $err = "Jumlah SKS harus antara 1 sampai 4.";
     } else {
-        // Validasi Prasyarat
         $valid_prasyarat = true;
         $invalid_tokens = [];
         if (!empty($syarat)) {
@@ -89,7 +84,7 @@ $listProdi = $pdo->query("SELECT * FROM program_studi")->fetchAll();
 <html lang="id">
 <head><meta charset="utf-8"><title>Form MK</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="../assets/css/style.css"></head>
 <body>
-<?php include "header.php"; ?>
+<?php include "../header.php"; ?>
 <div class="container mt-4"><div class="row justify-content-center"><div class="col-md-8"><div class="card shadow">
     <div class="card-header bg-primary text-white">Form Mata Kuliah</div>
     <div class="card-body">
@@ -143,4 +138,5 @@ $listProdi = $pdo->query("SELECT * FROM program_studi")->fetchAll();
         </form>
     </div>
 </div></div></div></div>
+<?php include "../footer.php"; ?>
 </body></html>

@@ -1,5 +1,4 @@
 <?php
-// dosen/kaprodi/ubah_password.php
 require_once "../../config/auth.php";
 require_once "../../config/database.php";
 
@@ -47,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<?php include "../header.php"; ?>
+<?php include "../../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -88,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
+<?php include "../../footer.php"; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../../assets/js/script.js"></script>
 </body>

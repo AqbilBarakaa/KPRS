@@ -1,5 +1,4 @@
 <?php
-// dosen/sidebar.php
 $currentPage = basename($_SERVER['PHP_SELF']);
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
@@ -41,15 +40,16 @@ $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) 
                 Profil Saya
             </a>
         </li>
-        
         <li>
             <a href="perwalian.php" class="<?= $currentPage == 'perwalian.php' ? 'menu-active' : 'menu-default' ?>">
                 Mahasiswa Perwalian
             </a>
         </li>
-        
-        <li><a href="#" class="menu-default">Jadwal Mengajar</a></li>
         <li>
+            <a href="jadwal_mengajar.php" class="<?= $currentPage == 'jadwal_mengajar.php' ? 'menu-active' : 'menu-default' ?>">
+                Jadwal Mengajar
+            </a>
+        </li>        <li>
             <a href="ubah_password.php" class="<?= $currentPage == 'ubah_password.php' ? 'menu-active' : 'menu-default' ?>">
                 Ubah Password
             </a>
