@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/dashboard.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -12,12 +11,10 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// --- 1. PESAN MASUK (INBOX) ---
 $stmtInbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'mahasiswa' ORDER BY created_at DESC LIMIT 5");
 $stmtInbox->execute([$user_id]);
 $inbox = $stmtInbox->fetchAll();
 
-// --- 2. PESAN TERKIRIM (SENT) ---
 $stmtSent = $pdo->prepare("SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'mahasiswa' ORDER BY created_at DESC LIMIT 5");
 $stmtSent->execute([$user_id]);
 $sent = $stmtSent->fetchAll();

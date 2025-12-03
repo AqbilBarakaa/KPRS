@@ -1,5 +1,4 @@
 <?php
-// dosen/sidebar.php
 $currentPage = basename($_SERVER['PHP_SELF']);
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
@@ -11,7 +10,6 @@ $stmtFoto->execute([$user['id']]);
 $fotoDb = $stmtFoto->fetchColumn();
 $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) ? "../assets/img/uploads/$fotoDb" : "https://via.placeholder.com/100x120.png?text=DOSEN";
 
-// Hitung pesan belum dibaca untuk Badge
 $cntUnread = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id={$user['id']} AND user_type='dosen' AND is_read=0")->fetchColumn();
 ?>
 <div class="sidebar-box">

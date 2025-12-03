@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/pesan.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -9,17 +8,13 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 }
 
 $user_id = $_SESSION['user']['id'];
-$folder = $_GET['folder'] ?? 'inbox'; // Default: inbox
+$folder = $_GET['folder'] ?? 'inbox';
 
-// --- LOGIKA QUERY BERDASARKAN FOLDER ---
 if ($folder == 'sent') {
-    // Kotak Terkirim: Log aktivitas (Notifikasi yang dikirim OLEH mahasiswa ini)
-    // Contoh: Saat mahasiswa submit form tambah kelas, sistem mencatat sender_id = mahasiswa_id
     $sql = "SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'mahasiswa' ORDER BY created_at DESC";
-    $titleBox = "Riwayat Aktivitas (Terkirim)";
+    $titleBox = "Pesan Terkirim";
     $emptyMsg = "Belum ada aktivitas pengajuan.";
 } else {
-    // Kotak Masuk: Notifikasi UNTUK mahasiswa ini (Dari Kaprodi/TU)
     $sql = "SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'mahasiswa' ORDER BY created_at DESC";
     $titleBox = "Notifikasi Masuk";
     $emptyMsg = "Belum ada notifikasi baru.";
@@ -29,15 +24,11 @@ $stmtData = $pdo->prepare($sql);
 $stmtData->execute([$user_id]);
 $listPesan = $stmtData->fetchAll();
 
-// --- UPDATE STATUS DIBACA (Hanya untuk Kotak Masuk) ---
 if ($folder == 'inbox' && !empty($listPesan)) {
-    // Otomatis tandai semua sudah dibaca saat membuka halaman ini
     $pdo->prepare("UPDATE notifikasi SET is_read = 1 WHERE user_id = ? AND user_type = 'mahasiswa'")->execute([$user_id]);
 }
 
-// --- HITUNG JUMLAH ---
 $cntInbox = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id=$user_id AND user_type='mahasiswa'")->fetchColumn();
-// Hitung yg belum dibaca untuk badge merah
 $cntUnread = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id=$user_id AND user_type='mahasiswa' AND is_read=0")->fetchColumn();
 $cntSent = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE sender_id=$user_id AND sender_type='mahasiswa'")->fetchColumn();
 

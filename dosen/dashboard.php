@@ -1,10 +1,8 @@
 <?php
-// dosen/dashboard.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
-// Cek akses: Dosen Biasa atau DPA
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa'])) {
     header("Location: ../login.php"); exit;
 }
@@ -13,14 +11,10 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// --- 1. PESAN MASUK (INBOX) ---
-// Pesan yang ditujukan ke 'dosen' (user_id terkait)
 $stmtInbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtInbox->execute([$user_id]);
 $inbox = $stmtInbox->fetchAll();
 
-// --- 2. PESAN TERKIRIM (SENT) ---
-// Pesan yang dikirim OLEH 'dosen' (sender_id terkait)
 $stmtSent = $pdo->prepare("SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtSent->execute([$user_id]);
 $sent = $stmtSent->fetchAll();

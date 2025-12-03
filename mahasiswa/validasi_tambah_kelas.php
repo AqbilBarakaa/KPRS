@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/tambah_kelas_history.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -11,19 +10,15 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 
 $mahasiswa_id = $_SESSION['user']['id'];
 
-// --- PROSES BATALKAN ---
 if (isset($_POST['batalkan_id'])) {
     $id_batal = $_POST['batalkan_id'];
-    // Hapus hanya jika status masih pending
     $stmtDel = $pdo->prepare("DELETE FROM pengajuan_tambah_kelas WHERE id = ? AND mahasiswa_id = ? AND status = 'pending'");
     $stmtDel->execute([$id_batal, $mahasiswa_id]);
     
-    header("Location: tambah_kelas_history.php");
+    header("Location: validasi_tambah_kelas.php");
     exit;
 }
 
-// --- AMBIL DATA RIWAYAT ---
-// PERBAIKAN: Gunakan LEFT JOIN ke tabel kelas, karena saat request awal kelas_id masih NULL
 $stmt = $pdo->prepare("
     SELECT p.*, mk.kode_mk, mk.nama_mk, 
            k.nama_kelas, 

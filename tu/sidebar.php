@@ -1,17 +1,32 @@
 <?php
-// tu/sidebar.php
 $currentPage = basename($_SERVER['PHP_SELF']);
 $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $nip = htmlspecialchars($user['username']);
 
-// Ambil foto terbaru
 global $pdo;
+
 $stmtFoto = $pdo->prepare("SELECT foto FROM tata_usaha WHERE id = ?");
 $stmtFoto->execute([$user['id']]);
 $fotoDb = $stmtFoto->fetchColumn();
 $fotoProfil = (!empty($fotoDb) && file_exists("../assets/img/uploads/$fotoDb")) ? "../assets/img/uploads/$fotoDb" : "https://via.placeholder.com/100x120.png?text=STAFF+TU";
-$cntPending = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE status='approved'")->fetchColumn();
+
+$cntPending = $pdo->query("SELECT COUNT(DISTINCT mata_kuliah_id) FROM pengajuan_tambah_kelas WHERE status='approved'")->fetchColumn();
+
+$sqlSidebar = "
+    SELECT mk.semester, mk.nama_mk, COUNT(p.id) as total
+    FROM pengajuan_tambah_kelas p
+    JOIN mata_kuliah mk ON p.mata_kuliah_id = mk.id
+    WHERE p.status = 'approved'
+    GROUP BY mk.semester, mk.id
+    ORDER BY mk.semester ASC, mk.nama_mk ASC
+";
+$rawSidebar = $pdo->query($sqlSidebar)->fetchAll();
+
+$groupedNew = [];
+foreach ($rawSidebar as $row) {
+    $groupedNew[$row['semester']][] = $row;
+}
 ?>
 <div class="sidebar-box">
     <div class="sidebar-header">Informasi Pengguna</div>
@@ -45,6 +60,11 @@ $cntPending = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE sta
                 <?php if($cntPending > 0): ?>
                     <span class="badge bg-danger ms-1"><?= $cntPending ?></span>
                 <?php endif; ?>
+            </a>
+        </li>
+        <li>
+            <a href="periode.php" class="<?= $currentPage == 'periode.php' ? 'menu-active' : 'menu-default' ?>">
+                Setting Periode
             </a>
         </li>
         <li>

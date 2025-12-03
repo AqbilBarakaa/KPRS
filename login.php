@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="form-label fw-bold small text-secondary">USERNAME</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
-                                <input type="text" name="username" class="form-control border-start-0 ps-0" placeholder="NIM / NIDN / NIP" required autofocus>
+                                <input type="text" name="username" class="form-control border-start-0 ps-0" placeholder=" NIM / NIDN / NIP" required autofocus>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="form-label fw-bold small text-secondary">PASSWORD</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
-                                <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="Masukkan Password" required>
+                                <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder=" Masukkan Password" required>
                             </div>
                         </div>
 

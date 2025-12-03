@@ -1,5 +1,4 @@
 <?php
-// mahasiswa/tambah_kelas.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -11,10 +10,8 @@ if (!$auth->isLoggedIn() || ($_SESSION['user']['role'] ?? '') !== 'mahasiswa') {
 $mahasiswa_id = $_SESSION['user']['id'];
 $message = ''; $error = '';
 
-// Ambil Filter Semester dari GET atau Default 1
 $filter_semester = $_GET['sem'] ?? 1;
 
-// --- PROSES PENGAJUAN ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mk_id = $_POST['mk_id'] ?? '';
     $alasan = trim($_POST['alasan'] ?? '');
@@ -23,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Harap pilih mata kuliah dan isi alasan pengajuan.";
     } else {
         try {
-            // 1. Ambil Info Mata Kuliah & Prasyarat
             $stmtMK = $pdo->prepare("SELECT kode_mk, nama_mk, prasyarat FROM mata_kuliah WHERE id = ?");
             $stmtMK->execute([$mk_id]);
             $mkInfo = $stmtMK->fetch();
@@ -33,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $prasyaratStr = $mkInfo['prasyarat'];
 
-                // 2. Cek Prasyarat
                 $memenuhiSyarat = true;
                 $alasanGagal = "";
 
@@ -66,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$memenuhiSyarat) {
                     $error = "<b>Syarat Tidak Terpenuhi:</b> " . $alasanGagal;
                 } else {
-                    // 3. Simpan Pengajuan
                     $cekPending = $pdo->prepare("SELECT id FROM pengajuan_tambah_kelas WHERE mahasiswa_id = ? AND mata_kuliah_id = ? AND status = 'pending'");
                     $cekPending->execute([$mahasiswa_id, $mk_id]);
 
@@ -79,13 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         $message = "Pengajuan berhasil dikirim! Menunggu validasi Kaprodi.";
 
-                        // --- NOTIFIKASI KE KAPRODI (DIPERBAIKI) ---
-                        // Cari Prodi Mahasiswa
                         $stmtMhs = $pdo->prepare("SELECT prodi, nama FROM mahasiswa WHERE id = ?");
                         $stmtMhs->execute([$mahasiswa_id]);
                         $mhs = $stmtMhs->fetch();
 
-                        // Cari Kaprodi yang sesuai Prodi Mahasiswa
                         $stmtKaprodi = $pdo->prepare("SELECT id FROM dosen WHERE jabatan = 'Kaprodi' AND prodi = ?");
                         $stmtKaprodi->execute([$mhs['prodi']]);
                         $listKaprodi = $stmtKaprodi->fetchAll();
@@ -94,13 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             kirimNotifikasi(
                                 $pdo, 
                                 $k['id'], 
-                                'dosen', // Penerima: Kaprodi (Dosen)
+                                'dosen', 
                                 'Pengajuan Tambah Kelas', 
                                 "Mahasiswa {$mhs['nama']} mengajukan tambah kelas {$mkInfo['nama_mk']}.", 
                                 'warning', 
                                 'validasi_tambah_kelas.php',
-                                $mahasiswa_id, // Pengirim ID (Mahasiswa)
-                                'mahasiswa'    // Pengirim Type
+                                $mahasiswa_id, 
+                                'mahasiswa'   
                             );
                         }
                     }
@@ -110,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- AMBIL DAFTAR MATAKULIAH SESUAI SEMESTER TERPILIH ---
 $stmtListMK = $pdo->prepare("SELECT id, kode_mk, nama_mk, prasyarat FROM mata_kuliah WHERE semester = ? ORDER BY nama_mk ASC");
 $stmtListMK->execute([$filter_semester]);
 $listMK = $stmtListMK->fetchAll();

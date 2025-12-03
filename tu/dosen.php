@@ -51,8 +51,8 @@ $kaprodi = $pdo->query("SELECT * FROM dosen WHERE jabatan = 'Kaprodi' ORDER BY n
                     <a href="dosen_form.php" class="btn btn-primary btn-sm">Tambah Dosen</a>
                 </div>
 
-                <?php if ($msg) echo "<div class='alert alert-success'>$msg</div>"; ?>
-                <?php if ($err) echo "<div class='alert alert-danger'>$err</div>"; ?>
+                <?php if ($msg) echo "<div class='alert alert-success alert-dismissible fade show'>$msg <button class='btn-close' data-bs-dismiss='alert'></button></div>"; ?>
+                <?php if ($err) echo "<div class='alert alert-danger alert-dismissible fade show'>$err <button class='btn-close' data-bs-dismiss='alert'></button></div>"; ?>
 
                 <ul class="nav nav-tabs mb-3" id="dosenTab" role="tablist">
                     <li class="nav-item">

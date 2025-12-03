@@ -1,5 +1,4 @@
 <?php
-// tu/dashboard.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -12,7 +11,6 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// Statistik
 try {
     $jml_mhs = $pdo->query("SELECT COUNT(*) FROM mahasiswa")->fetchColumn();
     $jml_dosen = $pdo->query("SELECT COUNT(*) FROM dosen")->fetchColumn();
@@ -20,7 +18,6 @@ try {
     $jml_kelas = $pdo->query("SELECT COUNT(*) FROM kelas")->fetchColumn();
 } catch (Exception $e) { $jml_mhs = $jml_dosen = $jml_mk = $jml_kelas = 0; }
 
-// --- PESAN MASUK & TERKIRIM ---
 $inbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'tata_usaha' ORDER BY created_at DESC LIMIT 5");
 $inbox->execute([$user_id]);
 $listInbox = $inbox->fetchAll();

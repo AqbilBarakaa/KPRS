@@ -66,8 +66,11 @@ $sb_prodi = $_SESSION['user']['prodi'] ?? 'TEKNIK INFORMATIKA';
                 Informasi Matakuliah
             </a>
         </li>        
-        <li><a href="#" class="menu-default">Kartu Rencana Studi</a></li>
         <li>
+            <a href="krs.php" class="<?= $currentPage == 'krs.php' ? 'menu-active' : 'menu-default' ?>">
+                Kartu Rencana Studi
+            </a>
+        </li>        <li>
             <a href="tambah_kelas.php" class="<?= ($currentPage == 'tambah_kelas.php' || $currentPage == 'tambah_kelas_history.php') ? 'menu-active' : 'menu-default' ?>">
                 Pengajuan Tambah Kelas
             </a>

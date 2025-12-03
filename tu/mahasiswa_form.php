@@ -98,8 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $listDosen = $pdo->query("SELECT id, nidn, nama FROM dosen WHERE jabatan = 'Dosen' ORDER BY nama ASC")->fetchAll();
 
-$listProdi = ['Teknik Informatika', 'Sistem Informasi', 'Teknik Industri', 'Teknik Mekatronika']; 
-$fotoPath = "../assets/img/uploads/" . ($foto_db ?? 'default.png');
+$listProdi = $pdo->query("SELECT * FROM program_studi ORDER BY nama_prodi ASC")->fetchAll();$fotoPath = "../assets/img/uploads/" . ($foto_db ?? 'default.png');
 $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoPath : "https://via.placeholder.com/150x180.png?text=NO+IMG";
 ?>
 <!DOCTYPE html>
@@ -158,7 +157,9 @@ $fotoPreview = ($is_edit && file_exists($fotoPath) && !empty($foto_db)) ? $fotoP
                                         <select name="prodi" class="form-select" required>
                                             <option value="">-- Pilih Prodi --</option>
                                             <?php foreach ($listProdi as $p): ?>
-                                                <option value="<?= $p ?>" <?= ($prodi == $p) ? 'selected' : '' ?>><?= $p ?></option>
+                                                <option value="<?= htmlspecialchars($p['nama_prodi']) ?>" <?= ($prodi == $p['nama_prodi']) ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($p['nama_prodi']) ?>
+                                                </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

@@ -1,5 +1,4 @@
 <?php
-// dosen/kaprodi/dashboard.php
 require_once "../../config/auth.php";
 require_once "../../config/database.php";
 
@@ -12,10 +11,13 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// Statistik
-$pendingCount = $pdo->query("SELECT COUNT(*) FROM pengajuan_tambah_kelas WHERE status = 'pending'")->fetchColumn();
+$stmtPending = $pdo->query("
+    SELECT COUNT(DISTINCT mata_kuliah_id) 
+    FROM pengajuan_tambah_kelas 
+    WHERE status = 'pending'
+");
+$mkPendingCount = $stmtPending->fetchColumn();
 
-// Pesan (User type = 'dosen' karena Kaprodi adalah dosen)
 $inbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $inbox->execute([$user_id]);
 $listInbox = $inbox->fetchAll();
@@ -31,7 +33,10 @@ $listSent = $sent->fetchAll();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../../assets/css/style.css">
-    <style>.stat-card { border: 1px solid #ddd; padding: 15px; background: #fff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; transition: 0.3s; } .stat-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }</style>
+    <style>
+        .stat-card { border: 1px solid #ddd; padding: 15px; background: #fff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
 <?php include "../../header.php"; ?>
@@ -44,23 +49,32 @@ $listSent = $sent->fetchAll();
             </div>
 
             <div class="row">
-                <div class="col-md-6"><div class="card bg-white border-warning mb-3 shadow-sm"><div class="card-body text-center"><h1 class="display-4 fw-bold text-warning"><?= $pendingCount ?></h1><p class="card-text text-muted">Pengajuan Pending</p><a href="validasi_tambah_kelas.php" class="btn btn-warning btn-sm text-dark">Validasi</a></div></div></div>
-                <div class="col-md-6"><div class="card bg-white border-primary mb-3 shadow-sm"><div class="card-body text-center"><h1 class="display-4 fw-bold text-primary">0</h1><p class="card-text text-muted">Laporan Hari Ini</p><a href="#" class="btn btn-primary btn-sm">Lihat</a></div></div></div>
+                <div class="col-md-12"> <div class="card bg-white border-warning mb-3 shadow-sm">
+                        <div class="card-body text-center py-4">
+                            <h1 class="display-4 fw-bold text-warning"><?= $mkPendingCount ?></h1>
+                            <p class="card-text text-muted">Mata Kuliah Perlu Divalidasi</p>
+                            <a href="validasi_tambah_kelas.php" class="btn btn-warning btn-sm text-dark px-4 fw-bold">
+                                Validasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="content-box">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="msg-header mb-0">Kotak Pesan</div>
+                    <div class="msg-header mb-0"><i class="fas fa-envelope me-2"></i> Kotak Pesan</div>
                     <a href="pesan.php" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
+                
                 <ul class="nav nav-tabs mb-3" id="kpTab" role="tablist">
                     <li class="nav-item"><button class="nav-link active" id="kp-inbox-tab" data-bs-toggle="tab" data-bs-target="#kp-inbox">Masuk</button></li>
-                    <li class="nav-item"><button class="nav-link" id="kp-sent-tab" data-bs-toggle="tab" data-bs-target="#kp-sent">Terkirim</button></li>
+                    <li class="nav-item"><button class="nav-link" id="kp-sent-tab" data-bs-toggle="tab" data-bs-target="#kp-sent">Terkirim (Validasi)</button></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="kp-inbox">
                         <div class="table-responsive"><table class="table table-bordered table-sm mb-0 small"><thead class="table-light"><tr><th>Waktu</th><th>Pesan</th><th>Status</th></tr></thead><tbody>
-                            <?php if(empty($listInbox)): ?><tr><td colspan="3" class="text-center text-muted">Belum ada riwayat.</td></tr><?php else: foreach($listInbox as $n): ?>
+                            <?php if(empty($listInbox)): ?><tr><td colspan="3" class="text-center text-muted">Kosong.</td></tr><?php else: foreach($listInbox as $n): ?>
                             <tr class="<?= $n['is_read']?'':'fw-bold bg-light' ?>"><td><?= date('d M H:i', strtotime($n['created_at'])) ?></td><td><span class="text-primary"><?= htmlspecialchars($n['judul']) ?></span><br><?= htmlspecialchars($n['pesan']) ?></td><td><?= $n['is_read']?'Dibaca':'Baru' ?></td></tr>
                             <?php endforeach; endif; ?>
                         </tbody></table></div>

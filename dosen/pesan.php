@@ -1,5 +1,4 @@
 <?php
-// dosen/pesan.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -11,14 +10,11 @@ if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dose
 $user_id = $_SESSION['user']['id'];
 $folder = $_GET['folder'] ?? 'inbox';
 
-// --- LOGIKA QUERY ---
 if ($folder == 'sent') {
-    // Log Aktivitas (Apa yang dilakukan dosen ini)
     $sql = "SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'dosen' ORDER BY created_at DESC";
-    $titleBox = "Riwayat Aktivitas (Terkirim)";
+    $titleBox = "Pesan Terkirim";
     $emptyMsg = "Belum ada aktivitas tercatat.";
 } else {
-    // Notifikasi Masuk (Misal: Mahasiswa bimbingan mengajukan KRS)
     $sql = "SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'dosen' ORDER BY created_at DESC";
     $titleBox = "Notifikasi Masuk";
     $emptyMsg = "Belum ada notifikasi baru.";
@@ -28,12 +24,10 @@ $stmtData = $pdo->prepare($sql);
 $stmtData->execute([$user_id]);
 $listPesan = $stmtData->fetchAll();
 
-// Update status dibaca
 if ($folder == 'inbox' && !empty($listPesan)) {
     $pdo->prepare("UPDATE notifikasi SET is_read = 1 WHERE user_id = ? AND user_type = 'dosen'")->execute([$user_id]);
 }
 
-// Counters
 $cntInbox = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id=$user_id AND user_type='dosen'")->fetchColumn();
 $cntUnread = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE user_id=$user_id AND user_type='dosen' AND is_read=0")->fetchColumn();
 $cntSent = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE sender_id=$user_id AND sender_type='dosen'")->fetchColumn();
@@ -70,8 +64,8 @@ $cntSent = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE sender_id=$user_id
                                 <span class="ms-auto small">(<b><?= $cntUnread ?></b>/<?= $cntInbox ?>)</span>
                             </div>
                             <div class="d-flex align-items-center border-top pt-2">
-                                <i class="fas fa-history folder-icon"></i>
-                                <a href="?folder=sent" class="folder-link <?= $folder=='sent'?'active':'' ?>">Riwayat Aktivitas</a>
+                                <i class="fas fa-paper-plane folder-icon"></i>
+                                <a href="?folder=sent" class="folder-link <?= $folder=='sent'?'active':'' ?>">Kotak Terkirim</a>
                                 <span class="ms-auto small">(<?= $cntSent ?>)</span>
                             </div>
                         </div>

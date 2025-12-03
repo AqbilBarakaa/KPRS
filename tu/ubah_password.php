@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (strpos($current, '$2y$') === 0) {
             $is_valid = password_verify($pass_lama, $current);
         } else {
-            $is_valid = ($pass_lama === $current); // Fallback plain text
+            $is_valid = ($pass_lama === $current); 
         }
 
         if (!$is_valid) {

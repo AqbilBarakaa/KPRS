@@ -53,8 +53,19 @@ $dataMhs = $pdo->query($query)->fetchAll();
                     <a href="mahasiswa_form.php" class="btn btn-primary btn-sm">Tambah Mahasiswa</a>
                 </div>
 
-                <?php if ($msg) echo "<div class='alert alert-success'>$msg</div>"; ?>
-                <?php if ($err) echo "<div class='alert alert-danger'>$err</div>"; ?>
+                <?php if ($msg): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= $msg ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($err): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= $err ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover align-middle text-center small">
@@ -87,11 +98,13 @@ $dataMhs = $pdo->query($query)->fetchAll();
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <?php include "sidebar.php"; ?>
         </div>
     </div>
 </div>
 <?php include "../footer.php"; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

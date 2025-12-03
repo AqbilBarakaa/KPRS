@@ -49,8 +49,8 @@ $mkPilihan = $pdo->query("SELECT mk.*, ps.nama_prodi
                     <a href="matakuliah_form.php" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Tambah MK</a>
                 </div>
 
-                <?php if(isset($err)) echo "<div class='alert alert-danger'>$err</div>"; ?>
-                
+                <?php if(isset($err)) echo "<div class='alert alert-danger alert-dismissible fade show'>$err <button class='btn-close' data-bs-dismiss='alert'></button></div>"; ?>
+
                 <ul class="nav nav-tabs mb-3" id="mkTab" role="tablist">
                     <li class="nav-item">
                         <button class="nav-link active" id="wajib-tab" data-bs-toggle="tab" data-bs-target="#wajib" type="button">

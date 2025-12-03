@@ -40,7 +40,8 @@ $data = $pdo->query($query)->fetchAll();
                             <tr>
                                 <td><?= $r['nama_mk'] ?> (<?= $r['kode_mk'] ?>)</td>
                                 <td class="text-center fw-bold"><?= $r['nama_kelas'] ?></td>
-                                <td class="text-center"><?= htmlspecialchars($r['ruangan'] ?? '-') ?></td> <td><?= $r['nama_dosen'] ?></td>
+                                <td class="text-center"><?= htmlspecialchars($r['ruangan'] ?? '-') ?></td> 
+                                <td><?= htmlspecialchars($r['nama_dosen'] ?? '-') ?></td>
                                 <td><?= $r['hari'] ?>, <?= substr($r['jam_mulai'],0,5) ?>-<?= substr($r['jam_selesai'],0,5) ?></td>
                                 <td><?= $r['terisi'] ?> / <?= $r['kuota'] ?></td>
                                 <td>

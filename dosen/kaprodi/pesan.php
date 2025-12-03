@@ -1,5 +1,4 @@
 <?php
-// dosen/kaprodi/pesan.php
 require_once "../../config/auth.php";
 require_once "../../config/database.php";
 
@@ -11,7 +10,6 @@ if (!$auth->isLoggedIn() || $_SESSION['user']['role'] !== 'dosen_kaprodi') {
 $user_id = $_SESSION['user']['id'];
 $folder = $_GET['folder'] ?? 'inbox';
 
-// Kaprodi di database user_type-nya adalah 'dosen'
 if ($folder == 'sent') {
     $sql = "SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'dosen' ORDER BY created_at DESC";
     $titleBox = "Riwayat Validasi & Aktivitas";
@@ -55,7 +53,7 @@ $cntSent = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE sender_id=$user_id
     <div class="row">
         <div class="col-md-9">
             <div class="content-box">
-                <div class="msg-header">Pusat Pesan (Kaprodi)</div>
+                <div class="msg-header">Kotak Pesan</div>
                 <div class="row mb-4">
                     <div class="col-md-5">
                         <div class="msg-info-box">

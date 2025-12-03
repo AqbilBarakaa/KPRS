@@ -1,5 +1,4 @@
 <?php
-// tu/pesan.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
@@ -13,7 +12,7 @@ $folder = $_GET['folder'] ?? 'inbox';
 
 if ($folder == 'sent') {
     $sql = "SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'tata_usaha' ORDER BY created_at DESC";
-    $titleBox = "Riwayat Aktivitas TU";
+    $titleBox = "Pesan Terkirim";
     $emptyMsg = "Belum ada aktivitas.";
 } else {
     $sql = "SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'tata_usaha' ORDER BY created_at DESC";
@@ -64,8 +63,8 @@ $cntSent = $pdo->query("SELECT COUNT(*) FROM notifikasi WHERE sender_id=$user_id
                                 <span class="ms-auto small">(<b><?= $cntUnread ?></b>/<?= $cntInbox ?>)</span>
                             </div>
                             <div class="d-flex align-items-center border-top pt-2">
-                                <i class="fas fa-history text-success me-2" style="font-size:1.2rem"></i>
-                                <a href="?folder=sent" class="folder-link <?= $folder=='sent'?'active':'' ?>">Riwayat Aktivitas</a>
+                                <i class="fas fa-paper-plane folder-icon text-success me-2" style="font-size:1.2rem"></i>
+                                <a href="?folder=sent" class="folder-link <?= $folder=='sent'?'active':'' ?>">Kotak Terkirim</a>
                                 <span class="ms-auto small">(<?= $cntSent ?>)</span>
                             </div>
                         </div>

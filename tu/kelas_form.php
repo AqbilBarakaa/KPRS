@@ -19,8 +19,9 @@ if ($is_edit) {
 }
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-    $mk=$_POST['mk']; $nm=$_POST['nm']; $dos=$_POST['dos']; $hr=$_POST['hr']; 
+    $mk=$_POST['mk']; $nm=$_POST['nm']; $hr=$_POST['hr']; 
     $jm=$_POST['jm']; $js=$_POST['js']; $k=$_POST['k']; $rng=$_POST['rng']; 
+    $dos = !empty($_POST['dos']) ? $_POST['dos'] : null;
 
     try {
         if($is_edit) {
@@ -36,7 +37,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 $listMK = $pdo->query("SELECT * FROM mata_kuliah ORDER BY nama_mk")->fetchAll();
 $listDosen = $pdo->query("SELECT * FROM dosen WHERE jabatan='Dosen' ORDER BY nama")->fetchAll();
-$listHari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+$listHari = ['Senin','Selasa','Rabu','Kamis','Jumat'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -62,8 +63,8 @@ $listHari = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
             </div>
 
             <div class="mb-3"><label>Dosen Pengajar</label>
-                <select name="dos" class="form-select" required>
-                    <option value="">- Pilih Dosen -</option>
+                <select name="dos" class="form-select">
+                    <option value="">- Belum ditentukan -</option>
                     <?php foreach($listDosen as $d): ?><option value="<?= $d['id'] ?>" <?= $dos_id==$d['id']?'selected':'' ?>><?= $d['nama'] ?></option><?php endforeach; ?>
                 </select>
             </div>
