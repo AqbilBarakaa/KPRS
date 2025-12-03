@@ -1,8 +1,10 @@
 <?php
+// dosen/dashboard.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
+// Cek akses: Dosen Biasa atau DPA
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa'])) {
     header("Location: ../login.php"); exit;
 }
@@ -11,10 +13,53 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
+// --- CEK ALERT KRS & KPRS ---
+$stmtPeriode = $pdo->prepare("SELECT tanggal_selesai_krs, tanggal_selesai_kprs, tahun_akademik, semester 
+                               FROM periode_akademik 
+                               WHERE status = 'active' 
+                               LIMIT 1");
+$stmtPeriode->execute();
+$periodeAktif = $stmtPeriode->fetch();
+
+$alertKRS = false;
+$alertKPRS = false;
+$sisaHariKRS = 0;
+$sisaHariKPRS = 0;
+$periodeInfo = '';
+
+if ($periodeAktif) {
+    $periodeInfo = $periodeAktif['tahun_akademik'] . ' - ' . $periodeAktif['semester'];
+    $today = new DateTime();
+    
+    // Cek KRS
+    if ($periodeAktif['tanggal_selesai_krs']) {
+        $deadlineKRS = new DateTime($periodeAktif['tanggal_selesai_krs']);
+        if ($deadlineKRS >= $today) {
+            $sisaHariKRS = $today->diff($deadlineKRS)->days;
+            if ($sisaHariKRS <= 2) {
+                $alertKRS = true;
+            }
+        }
+    }
+    
+    // Cek KPRS
+    if ($periodeAktif['tanggal_selesai_kprs']) {
+        $deadlineKPRS = new DateTime($periodeAktif['tanggal_selesai_kprs']);
+        if ($deadlineKPRS >= $today) {
+            $sisaHariKPRS = $today->diff($deadlineKPRS)->days;
+            if ($sisaHariKPRS <= 2) {
+                $alertKPRS = true;
+            }
+        }
+    }
+}
+
+// --- 1. PESAN MASUK (INBOX) ---
 $stmtInbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtInbox->execute([$user_id]);
 $inbox = $stmtInbox->fetchAll();
 
+// --- 2. PESAN TERKIRIM (SENT) ---
 $stmtSent = $pdo->prepare("SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtSent->execute([$user_id]);
 $sent = $stmtSent->fetchAll();
@@ -28,7 +73,6 @@ $sent = $stmtSent->fetchAll();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        /* Style tambahan untuk tab notifikasi */
         .nav-tabs .nav-link.active { font-weight: bold; border-top: 3px solid #0d6efd; }
         .table-sm td, .table-sm th { font-size: 0.85rem; }
     </style>
@@ -40,6 +84,27 @@ $sent = $stmtSent->fetchAll();
 <div class="container">
     <div class="row">
         <div class="col-md-9">
+            
+            <?php if ($alertKRS): ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-exclamation-triangle me-2"></i>Perhatian!</strong> 
+                Masa KRS <?= htmlspecialchars($periodeInfo) ?> akan berakhir dalam <strong><?= $sisaHariKRS ?> hari</strong> 
+                (<?= date('d M Y, H:i', strtotime($periodeAktif['tanggal_selesai_krs'])) ?>).
+                Segera cek KRS Mahasiswa bimbingan Anda dan lakukan validasi!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
+
+            <?php if ($alertKPRS): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-exclamation-circle me-2"></i>Perhatian!</strong> 
+                Masa KPRS <?= htmlspecialchars($periodeInfo) ?> akan berakhir dalam <strong><?= $sisaHariKPRS ?> hari</strong> 
+                (<?= date('d M Y, H:i', strtotime($periodeAktif['tanggal_selesai_kprs'])) ?>). 
+                Segera Validasi KRS mahasiswa bimbingan Anda!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
+
             <div class="content-box">
                 <div class="welcome-title">Selamat Datang, <?= $nama ?></div>
                 <div class="welcome-text">
