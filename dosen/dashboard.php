@@ -1,10 +1,9 @@
 <?php
-// dosen/dashboard.php
 require_once "../config/auth.php";
 require_once "../config/database.php";
 
 $auth = new Auth();
-// Cek akses: Dosen Biasa atau DPA
+
 if (!$auth->isLoggedIn() || !in_array($_SESSION['user']['role'], ['dosen', 'dosen_dpa'])) {
     header("Location: ../login.php"); exit;
 }
@@ -13,7 +12,6 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// --- CEK ALERT KRS & KPRS ---
 $stmtPeriode = $pdo->prepare("SELECT tanggal_selesai_krs, tanggal_selesai_kprs, tahun_akademik, semester 
                                FROM periode_akademik 
                                WHERE status = 'active' 
@@ -41,8 +39,7 @@ if ($periodeAktif) {
             }
         }
     }
-    
-    // Cek KPRS
+
     if ($periodeAktif['tanggal_selesai_kprs']) {
         $deadlineKPRS = new DateTime($periodeAktif['tanggal_selesai_kprs']);
         if ($deadlineKPRS >= $today) {
@@ -54,12 +51,10 @@ if ($periodeAktif) {
     }
 }
 
-// --- 1. PESAN MASUK (INBOX) ---
 $stmtInbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtInbox->execute([$user_id]);
 $inbox = $stmtInbox->fetchAll();
 
-// --- 2. PESAN TERKIRIM (SENT) ---
 $stmtSent = $pdo->prepare("SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'dosen' ORDER BY created_at DESC LIMIT 5");
 $stmtSent->execute([$user_id]);
 $sent = $stmtSent->fetchAll();

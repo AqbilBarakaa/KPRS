@@ -11,7 +11,6 @@ $user = $_SESSION['user'];
 $nama = htmlspecialchars($user['nama']);
 $user_id = $user['id'];
 
-// --- CEK ALERT KRS & KPRS ---
 $stmtPeriode = $pdo->prepare("SELECT tanggal_selesai_krs, tanggal_selesai_kprs, tahun_akademik, semester 
                               FROM periode_akademik 
                               WHERE status = 'active' 
@@ -29,7 +28,6 @@ if ($periodeAktif) {
     $periodeInfo = $periodeAktif['tahun_akademik'] . ' - ' . $periodeAktif['semester'];
     $today = new DateTime();
 
-    // --- Cek deadline KRS ---
     if ($periodeAktif['tanggal_selesai_krs']) {
         $deadlineKRS = new DateTime($periodeAktif['tanggal_selesai_krs']);
         if ($deadlineKRS >= $today) {
@@ -40,7 +38,6 @@ if ($periodeAktif) {
         }
     }
 
-    // --- Cek deadline KPRS ---
     if ($periodeAktif['tanggal_selesai_kprs']) {
         $deadlineKPRS = new DateTime($periodeAktif['tanggal_selesai_kprs']);
         if ($deadlineKPRS >= $today) {
@@ -52,13 +49,10 @@ if ($periodeAktif) {
     }
 }
 
-
-// --- PESAN MASUK ---
 $stmtInbox = $pdo->prepare("SELECT * FROM notifikasi WHERE user_id = ? AND user_type = 'mahasiswa' ORDER BY created_at DESC LIMIT 5");
 $stmtInbox->execute([$user_id]);
 $inbox = $stmtInbox->fetchAll();
 
-// --- PESAN TERKIRIM ---
 $stmtSent = $pdo->prepare("SELECT * FROM notifikasi WHERE sender_id = ? AND sender_type = 'mahasiswa' ORDER BY created_at DESC LIMIT 5");
 $stmtSent->execute([$user_id]);
 $sent = $stmtSent->fetchAll();
@@ -80,7 +74,7 @@ $sent = $stmtSent->fetchAll();
     <div class="row">
         <div class="col-md-9">
 
-            <!-- ALERT KRS -->
+     
             <?php if ($alertKRS): ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong><i class="fas fa-clock me-2"></i>Perhatian!</strong> 
@@ -91,8 +85,7 @@ $sent = $stmtSent->fetchAll();
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-
-            <!-- ALERT KPRS -->
+            
             <?php if ($alertKPRS): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong><i class="fas fa-exclamation-circle me-2"></i>Perhatian!</strong> 
