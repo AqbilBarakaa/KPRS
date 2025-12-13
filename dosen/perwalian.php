@@ -12,7 +12,8 @@ $dosen_id = $_SESSION['user']['id'];
 $query = "
     SELECT m.*, ps.nama_prodi,
            (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status != 'draft') as total_mk,
-           (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'diajukan') as pending_mk
+           (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'diajukan') as pending_mk,
+           (SELECT COUNT(*) FROM krs_awal k WHERE k.mahasiswa_id = m.id AND k.status = 'ditolak') as ditolak_mk
     FROM mahasiswa m
     LEFT JOIN program_studi ps ON m.prodi = ps.nama_prodi 
     WHERE m.dpa_id = ?
@@ -80,6 +81,8 @@ $listMhs = $stmt->fetchAll();
                                 <td class="text-center">
                                     <?php if($row['pending_mk'] > 0): ?>
                                         <span class="badge bg-warning text-dark">Butuh Validasi</span>
+                                    <?php elseif($row['ditolak_mk'] > 0): ?>
+                                        <span class="badge bg-danger">KRS Ditolak</span>
                                     <?php elseif($row['total_mk'] > 0): ?>
                                         <span class="badge bg-success">Sudah KRS</span>
                                     <?php else: ?>

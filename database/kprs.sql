@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2025 at 10:29 AM
+-- Generation Time: Dec 13, 2025 at 05:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,8 +44,8 @@ CREATE TABLE `dosen` (
 --
 
 INSERT INTO `dosen` (`id`, `nidn`, `nama`, `password`, `email`, `foto`, `jabatan`, `prodi`, `created_at`) VALUES
-(1, '12341', 'Dr. Rika Yunitarini ST., MT.', '123', 'rika@univ.ac.id', 'DOSEN_1234_1764415221.png', 'Dosen', 'Teknik Informatika', '2025-11-27 07:12:08'),
-(2, '12351', 'Dr. Fika Hastarita Rachman, S.T., M.Eng.', '123', 'fika@univ.ac.id', 'DOSEN_1235_1764415228.png', 'Kaprodi', 'Teknik Informatika', '2025-11-27 07:12:08'),
+(1, '12341', 'Dr. Rika Yunitarini ST., MT.', '$2y$10$3c/sX81dPga39PLBDxAPR.I0qy2W0uXbTui7v3GMrMGRcPvI10jGC', 'rika@univ.ac.id', 'DOSEN_1234_1764415221.png', 'Dosen', 'Teknik Informatika', '2025-11-27 07:12:08'),
+(2, '12351', 'Dr. Fika Hastarita Rachman, S.T., M.Eng.', '$2y$10$zBQq1iZJvyGFSJt34TTV2u2rX2RqtzG9ftZF7BfSo0w00GtxozCgm', 'fika@univ.ac.id', 'DOSEN_1235_1764415228.png', 'Kaprodi', 'Teknik Informatika', '2025-11-27 07:12:08'),
 (3, '12352', 'Dr. Budi Dwi Satoto, S.T., M.Kom', '$2y$10$pee33w1361NaggfMl6FR8.QjSUNc/8GXX5..5ESImm.ZTHVxgRmUu', 'budi@univ.ac.id', 'DOSEN_1236_1764419746.jpeg', 'Kaprodi', 'Sistem Informasi', '2025-11-29 12:35:46'),
 (4, '12342', 'Achmad Jauhari S.T., M.Kom.', '$2y$10$.5yZ8F1TjgtUZFvLQHT0h.Wn/xC6.MPUHVcfMbjAziipUOeS4G5ka', 'achmad@univ.ac.id', 'DOSEN_12341_1764420980.jpeg', 'Dosen', 'Teknik Informatika', '2025-11-29 12:56:20'),
 (5, '12343', 'Mula\'ab S.Si., M.Kom', '$2y$10$yhI7NBty/4K5.JY0fFlnHuvTUAt7.z9TOVURloAi6xFTgFQrbsFp2', 'mulaab@univ.ac.id', 'DOSEN_12343_1764421117.jpeg', 'Dosen', 'Teknik Informatika', '2025-11-29 12:58:37');
@@ -336,8 +336,8 @@ CREATE TABLE `mahasiswa` (
 --
 
 INSERT INTO `mahasiswa` (`id`, `nim`, `nama`, `jenis_kelamin`, `password`, `email`, `prodi`, `semester`, `ips`, `dpa_id`, `created_at`, `foto`) VALUES
-(1, '230411100073', 'Asep Prayogi', 'L', '$2y$10$uF4r4DVgpRxxPEqWBAVvveanxAdM7D//QpyBnIAArihSyyOPusK.m', 'asep@student.univ.ac.id', 'Teknik Informatika', 5, 3.40, 1, '2025-11-27 07:12:08', '230411100073_1764407735.jpg'),
-(2, '230411100076', 'Rypaldho Ridotua Hutagaol', 'L', '$2y$10$Wqn7V79IM3y7J.Z/SnSDIOjpoxVEy05lJjIOFas2fzny6oj5fCJ62', 'paldo@student.univ.ac.id', 'Teknik Informatika', 5, 3.40, 1, '2025-11-29 09:16:27', '230411100076_1764407787.jpg');
+(1, '230411100073', 'Asep Prayogi', 'L', '$2y$10$.UhQ0cRDAUhiDgsGGrOs3uTaNqySd/7Nj2vMieb2tjI9biVm3gIEe', 'asep@student.univ.ac.id', 'Teknik Informatika', 5, 3.40, 1, '2025-11-27 07:12:08', '230411100073_1764407735.jpg'),
+(2, '230411100076', 'Rypaldho Ridotua Hutagaol', 'L', '$2y$10$KIoTQm338AWK7EXH0Dt.8.4rx9Iblj1EM93v6siEIm6Wb2yaLR/mi', 'paldo@student.univ.ac.id', 'Teknik Informatika', 5, 3.40, 1, '2025-11-29 09:16:27', '230411100076_1764407787.jpg');
 
 -- --------------------------------------------------------
 
@@ -666,7 +666,7 @@ ALTER TABLE `mata_kuliah`
 -- AUTO_INCREMENT for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `pengajuan_tambah_kelas`
