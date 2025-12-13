@@ -49,20 +49,27 @@ if ($mhs['semester'] > 1) {
 }
 
 if (isset($_POST['mulai_revisi'])) {
-    try {
-        $pdo->prepare("UPDATE krs_awal SET status = 'draft' WHERE mahasiswa_id = ? AND status = 'disetujui'")->execute([$user_id]);
+    $alasan_revisi = trim($_POST['alasan_revisi'] ?? '');
+    
+    if (empty($alasan_revisi)) {
+        echo "<script>alert('Alasan revisi harus diisi!');</script>";
+    } else {
+        try {
+            $pdo->prepare("UPDATE krs_awal SET status = 'draft' WHERE mahasiswa_id = ? AND status = 'disetujui'")->execute([$user_id]);
 
-        if (function_exists('kirimNotifikasi')) {
-            kirimNotifikasi($pdo, $user_id, 'mahasiswa', 'Status Revisi Aktif', 
-                'Mode revisi telah diaktifkan. Silakan sesuaikan KRS dan AJUKAN VALIDASI ULANG.', 'info');
-            
-            if ($mhs['id_dosen_dpa']) {
-                kirimNotifikasi($pdo, $mhs['id_dosen_dpa'], 'dosen', 'Mahasiswa Melakukan Revisi', 
-                    "Mahasiswa {$mhs['nama']} ({$mhs['nim']}) telah membuka kembali KRS-nya untuk revisi.", 'info', 'perwalian.php', $user_id, 'mahasiswa');
+            if (function_exists('kirimNotifikasi')) {
+                kirimNotifikasi($pdo, $user_id, 'mahasiswa', 'Status Revisi Aktif', 
+                    'Mode revisi telah diaktifkan. Silakan sesuaikan KRS dan AJUKAN VALIDASI ULANG.', 'info');
+                
+                if ($mhs['id_dosen_dpa']) {
+                    $pesanRevisi = "Mahasiswa {$mhs['nama']} ({$mhs['nim']}) telah membuka kembali KRS-nya untuk revisi.\n\nAlasan Revisi:\n" . htmlspecialchars($alasan_revisi);
+                    kirimNotifikasi($pdo, $mhs['id_dosen_dpa'], 'dosen', 'Mahasiswa Melakukan Revisi', 
+                        $pesanRevisi, 'info', 'perwalian.php', $user_id, 'mahasiswa');
+                }
             }
-        }
-        header("Location: krs.php"); exit;
-    } catch (Exception $e) { echo "<script>alert('Gagal: " . $e->getMessage() . "');</script>"; }
+            header("Location: krs.php"); exit;
+        } catch (Exception $e) { echo "<script>alert('Gagal: " . $e->getMessage() . "');</script>"; }
+    }
 }
 
 if (isset($_POST['hapus_krs'])) {
@@ -88,7 +95,7 @@ if (isset($_POST['hapus_krs'])) {
 
 if (isset($_POST['ajukan_validasi'])) {
     try {
-        $pdo->prepare("UPDATE krs_awal SET status = 'diajukan' WHERE mahasiswa_id = ? AND status = 'draft'")->execute([$user_id]);
+        $pdo->prepare("UPDATE krs_awal SET status = 'diajukan' WHERE mahasiswa_id = ? AND status IN ('draft', 'ditolak')")->execute([$user_id]);
         if ($mhs['id_dosen_dpa']) {
             $tipePesan = $isKPRS ? "Revisi KPRS" : "Pengajuan KRS";
             if (function_exists('kirimNotifikasi')) {
@@ -230,7 +237,7 @@ $bisaTambah = $modeEdit;
                             </a>
                             
                             <?php if ($isKPRS && !$sudahPernahRevisi): ?>
-                                <button type="submit" name="mulai_revisi" class="btn btn-info btn-sm text-white fw-bold" onclick="return confirm('Mulai Revisi? Status matkul akan kembali ke Draft.')">
+                                <button type="button" class="btn btn-info btn-sm text-white fw-bold" data-bs-toggle="modal" data-bs-target="#modalRevisiKRS">
                                     <i class="fas fa-edit me-1"></i> Revisi KRS
                                 </button>
                             <?php endif; ?>
@@ -377,4 +384,58 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
+<?php if ($isKPRS && !$sudahPernahRevisi && $semuaDisetujui && !empty($krsData)): ?>
+<div class="modal fade" id="modalRevisiKRS" tabindex="-1" aria-labelledby="modalRevisiKRSLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="modalRevisiKRSLabel">
+                    <i class="fas fa-edit me-2"></i>Revisi KRS
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="formRevisiKRS">
+                <div class="modal-body">
+                    <div class="alert alert-warning small py-2">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Perhatian!</strong> Semua status matakuliah yang sudah disetujui akan kembali ke status <strong>Draft</strong>.
+                    </div>
+                    <div class="mb-3">
+                        <label for="alasan_revisi" class="form-label fw-bold">
+                            <i class="fas me-1 text-info"></i>Alasan Revisi <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="alasan_revisi" name="alasan_revisi" rows="4" 
+                            placeholder="Tuliskan alasan mengapa Anda ingin melakukan revisi KRS..." required></textarea>
+                        <div class="form-text text-muted small">
+                            Contoh: Ingin mengganti mata kuliah, jadwal bentrok, dll.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Batal
+                    </button>
+                    <button type="submit" name="mulai_revisi" class="btn btn-warning btn-sm text-white fw-bold" id="btnSubmitRevisi">
+                        <i class="fas fa-check me-1"></i>Mulai Revisi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('formRevisiKRS').addEventListener('submit', function(e) {
+    var alasan = document.getElementById('alasan_revisi').value.trim();
+    if (!alasan) {
+        e.preventDefault();
+        alert('Silakan isi alasan revisi terlebih dahulu!');
+        document.getElementById('alasan_revisi').focus();
+        return false;
+    }
+    return confirm('Anda yakin ingin memulai revisi KRS? Status matakuliah akan kembali ke Draft.');
+});
+</script>
+<?php endif; ?>
+<?php include "../footer.php"; ?>
 </body></html>

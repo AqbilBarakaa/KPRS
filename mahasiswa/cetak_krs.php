@@ -212,7 +212,7 @@ $tglSekarang = date('d') . ' ' . $bulanIndo[(int)date('m')] . ' ' . date('Y');
                     <td class="text-center"><?= substr($row['jam_mulai'],0,5) ?>-<?= substr($row['jam_selesai'],0,5) ?></td>
                     <td class="text-center"><?= htmlspecialchars($row['ruangan'] ?? '-') ?></td>
                     <td class="text-center">
-                        <?= ($row['status_krs'] == 'terdaftar') ? 'Baru' : 'Valid' ?>
+                        <?= ($row['status_krs'] == 'terdaftar') ? 'Baru' : 'Terdaftar' ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

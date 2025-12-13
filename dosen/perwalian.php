@@ -88,7 +88,7 @@ $listMhs = $stmt->fetchAll();
                                 </td>
                                 <td class="text-center">
                                     <a href="validasi_krs.php?mhs_id=<?= $row['id'] ?>" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-search me-1"></i> Cek KRS
+                                        <i></i> Cek KRS
                                     </a>
                                 </td>
                             </tr>

@@ -76,6 +76,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <button class="btn btn-login btn-lg py-2" type="submit">MASUK</button>
                         </div>
                     </form>
+
+                    <div class="mt-3 pt-3 border-top">
+                        <p class="text-muted small mb-2 fw-bold"><i class="fas fa-info-circle me-1"></i> Informasi Login: <i>(Semua Username, Password: 123)</i></p>
+                        <div class="small text-muted">
+                            <ul>
+                                <li><i class="text-primary me-2"></i>
+                                    <strong>Mahasiswa:</strong>
+                                    <ol>
+                                        <li>
+                                            <strong>NIM:</strong> 230411100073
+                                        </li>
+                                        <li>
+                                            <strong>NIM:</strong> 230411100076
+                                        </li>
+                                    </ol>
+                                </li>
+                                <li><i class="text-success me-2"></i>
+                                    <strong>Dosen Pembimbing:</strong>
+                                    <ul>
+                                        <li>
+                                            <strong>NIDN:</strong> 12341
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><i class="text-info me-2"></i>
+                                    <strong>Kaprodi:</strong>
+                                    <ul>
+                                        <li>
+                                            <strong>NIDN:</strong> 12351
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><i class="text-warning me-2"></i>
+                                    <strong>Tata Usaha:</strong>
+                                    <ul>
+                                        <li>
+                                            <strong>NIP:</strong> 123
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-footer bg-light text-center py-3">
